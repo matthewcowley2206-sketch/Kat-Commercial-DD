@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { writeFile, mkdir } from "fs/promises";
-import path from "path";
 import { prisma } from "@/lib/db";
 import { createAuditLog } from "@/lib/audit/logger";
 import { emitEvent } from "@/lib/events/bus";
+import { persistFile } from "@/lib/storage";
 import {
   ALLOWED_MIME_TYPES,
   hashFileContent,
@@ -51,24 +50,23 @@ export async function POST(request: NextRequest) {
     const safeName = sanitizeFileName(file.name);
     const uniqueName = `${Date.now()}_${safeName}`;
 
-    const uploadDir = path.join(process.cwd(), "uploads", projectId);
-    await mkdir(uploadDir, { recursive: true });
-    const filePath = path.join(uploadDir, uniqueName);
-    await writeFile(filePath, buffer);
+    const { filePath, fileData } = await persistFile(projectId, uniqueName, buffer);
 
     const document = await prisma.document.create({
       data: {
         projectId,
         type: documentType,
         fileName: file.name,
-        filePath: path.relative(process.cwd(), filePath),
+        filePath,
         fileHash,
         fileSize: file.size,
         mimeType: file.type,
+        fileData: fileData ? new Uint8Array(fileData) : null,
         status: "uploaded",
         metadata: JSON.stringify({
           originalName: file.name,
           uploadedAt: new Date().toISOString(),
+          storage: fileData ? "database" : "filesystem",
         }),
       },
     });

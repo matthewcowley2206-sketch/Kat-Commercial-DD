@@ -17,7 +17,12 @@ const jetbrainsMono = JetBrains_Mono({
   variable: "--font-mono",
 });
 
+const appUrl =
+  process.env.NEXT_PUBLIC_APP_URL ??
+  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
+
 export const metadata: Metadata = {
+  metadataBase: new URL(appUrl),
   title: "Kat Commercial DD — Australian Property Due Diligence",
   description:
     "Kat Commercial DD — a calm, guided workflow for commercial property due diligence. NCC, APRA, and FIRB compliance made clear.",

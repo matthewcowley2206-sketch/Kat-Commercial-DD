@@ -26,12 +26,22 @@ interface ProjectSummary {
 export default function HomePage() {
   const [projects, setProjects] = useState<ProjectSummary[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [showCreate, setShowCreate] = useState(false);
 
   const loadProjects = async () => {
-    const res = await fetch("/api/projects");
-    if (res.ok) setProjects(await res.json());
-    setLoading(false);
+    try {
+      const res = await fetch("/api/projects");
+      if (!res.ok) throw new Error("API error");
+      setProjects(await res.json());
+      setError(null);
+    } catch {
+      setError(
+        "We couldn't reach the server. If this is a new deployment, connect a Postgres database in Vercel and redeploy."
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -115,6 +125,14 @@ export default function HomePage() {
           <div className="card py-16 text-center" role="status">
             <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-slate-200 border-t-brand-600" aria-hidden />
             <p className="mt-4 text-sm text-slate-500">{copy.a11y.loading}</p>
+          </div>
+        ) : error ? (
+          <div className="card py-12 text-center" role="alert">
+            <p className="text-base font-medium text-slate-900">Something went wrong</p>
+            <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-slate-500">{error}</p>
+            <button type="button" className="btn-secondary mt-6" onClick={() => { setLoading(true); loadProjects(); }}>
+              Try again
+            </button>
           </div>
         ) : projects.length === 0 ? (
           <div className="card py-12 text-center sm:py-16">

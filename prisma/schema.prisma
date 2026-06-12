@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -36,6 +36,7 @@ model Document {
   fileHash     String
   fileSize     Int
   mimeType     String
+  fileData     Bytes?
   status       String   @default("uploaded")
   metadata     String?
   uploadedAt   DateTime @default(now())
