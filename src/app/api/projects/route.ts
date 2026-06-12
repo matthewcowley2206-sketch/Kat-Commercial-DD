@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma, getDatabaseStatus } from "@/lib/db";
+import { ensureDatabaseReady } from "@/lib/ensure-db";
 import { createAuditLog } from "@/lib/audit/logger";
 
 const createProjectSchema = z.object({
@@ -54,6 +55,11 @@ function formatZodError(error: z.ZodError): string {
 
 export async function GET() {
   try {
+    const db = await ensureDatabaseReady();
+    if (!db.ok) {
+      return NextResponse.json({ error: db.message }, { status: 503 });
+    }
+
     const projects = await prisma.project.findMany({
       orderBy: { updatedAt: "desc" },
       select: {
@@ -84,6 +90,11 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
+    const db = await ensureDatabaseReady();
+    if (!db.ok) {
+      return NextResponse.json({ error: db.message }, { status: 503 });
+    }
+
     const body = await request.json();
     const data = createProjectSchema.parse(body);
 

@@ -37,7 +37,7 @@ export const copy = {
     submit: "Create project",
     submitting: "Creating…",
     success: "Project created. Let's gather your documents.",
-    error: "We couldn't create the project. Please try again.",
+    error: "We couldn't create the project. Check that a database is connected in Vercel Storage.",
   },
   journey: {
     steps: {
