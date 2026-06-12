@@ -2,13 +2,19 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Plus, Building2, Shield, ClipboardCheck, Sparkles, ArrowRight } from "lucide-react";
+import { Plus, Building2, Shield, ClipboardCheck, Sparkles, ArrowRight, Trash2 } from "lucide-react";
 import { isDemoProject } from "@/lib/demo/constants";
 import { KatLogo } from "@/components/KatLogo";
 import { CreateProjectModal } from "@/components/CreateProjectModal";
+import { DeleteProjectModal } from "@/components/DeleteProjectModal";
+import { StatExplainerModal, type StatTopic } from "@/components/StatExplainerModal";
 import { LiveRegion } from "@/components/ui/LiveRegion";
 import { copy } from "@/lib/copy";
+import { getRegulatoryStats } from "@/lib/education/stats";
 import { formatCurrency, getRiskBadgeClass, humanize } from "@/lib/utils";
+import type { RegulationCategory } from "@/types";
+
+const defaultRegulatoryStats = getRegulatoryStats();
 
 interface ProjectSummary {
   id: string;
@@ -30,6 +36,13 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showCreate, setShowCreate] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<ProjectSummary | null>(null);
+  const [statTopic, setStatTopic] = useState<StatTopic | null>(null);
+  const [frameworkCount, setFrameworkCount] = useState(defaultRegulatoryStats.frameworkCount);
+  const [checkCount, setCheckCount] = useState(defaultRegulatoryStats.checkCount);
+  const [categories, setCategories] = useState<RegulationCategory[]>(
+    defaultRegulatoryStats.categories
+  );
 
   const loadProjects = async () => {
     try {
@@ -48,8 +61,22 @@ export default function HomePage() {
     }
   };
 
+  const loadRegulatoryStats = async () => {
+    try {
+      const res = await fetch("/api/regulations/stats");
+      if (!res.ok) return;
+      const data = await res.json();
+      setFrameworkCount(data.frameworkCount ?? 5);
+      setCheckCount(data.checkCount ?? 0);
+      setCategories(data.categories ?? []);
+    } catch {
+      // Stats cards fall back to defaults if this request fails.
+    }
+  };
+
   useEffect(() => {
     loadProjects();
+    loadRegulatoryStats();
   }, []);
 
   return (
@@ -135,33 +162,57 @@ export default function HomePage() {
 
       {/* Stats */}
       <section className="mb-8 grid gap-3 sm:grid-cols-3 sm:gap-4" aria-label="Overview statistics">
-        <div className="card flex items-center gap-4">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-brand-50 text-brand-600" aria-hidden>
-            <Building2 className="h-5 w-5" />
-          </div>
-          <div>
-            <p className="text-2xl font-bold tabular-nums text-slate-900">{projects.length}</p>
-            <p className="text-sm text-slate-500">{copy.home.stats.projects}</p>
-          </div>
-        </div>
-        <div className="card flex items-center gap-4">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-green-50 text-green-700" aria-hidden>
-            <Shield className="h-5 w-5" />
-          </div>
-          <div>
-            <p className="text-2xl font-bold tabular-nums text-slate-900">5</p>
-            <p className="text-sm text-slate-500">{copy.home.stats.frameworks}</p>
-          </div>
-        </div>
-        <div className="card flex items-center gap-4">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-amber-50 text-amber-700" aria-hidden>
-            <ClipboardCheck className="h-5 w-5" />
-          </div>
-          <div>
-            <p className="text-2xl font-bold tabular-nums text-slate-900">23</p>
-            <p className="text-sm text-slate-500">{copy.home.stats.checks}</p>
-          </div>
-        </div>
+        {(
+          [
+            {
+              topic: "projects" as const,
+              value: projects.length,
+              label: copy.home.stats.projects,
+              icon: Building2,
+              iconClass: "bg-brand-50 text-brand-600",
+            },
+            {
+              topic: "frameworks" as const,
+              value: frameworkCount,
+              label: copy.home.stats.frameworks,
+              icon: Shield,
+              iconClass: "bg-green-50 text-green-700",
+            },
+            {
+              topic: "checks" as const,
+              value: checkCount,
+              label: copy.home.stats.checks,
+              icon: ClipboardCheck,
+              iconClass: "bg-amber-50 text-amber-700",
+            },
+          ] as const
+        ).map((stat) => (
+          <button
+            key={stat.topic}
+            type="button"
+            className="card group flex w-full items-center gap-4 text-left transition-all duration-200 hover:border-brand-200 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+            onClick={() => setStatTopic(stat.topic)}
+            aria-label={`${stat.value} ${stat.label}. ${copy.home.stats.tapToExplore}`}
+          >
+            <div
+              className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl ${stat.iconClass}`}
+              aria-hidden
+            >
+              <stat.icon className="h-5 w-5" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-2xl font-bold tabular-nums text-slate-900">{stat.value}</p>
+              <p className="text-sm text-slate-500">{stat.label}</p>
+              <p className="mt-1 text-xs font-medium text-brand-600 opacity-100 sm:opacity-0 sm:transition-opacity sm:group-hover:opacity-100 sm:group-focus-visible:opacity-100">
+                {copy.home.stats.learnMore}
+              </p>
+            </div>
+            <ArrowRight
+              className="h-4 w-4 shrink-0 text-slate-300 transition-colors group-hover:text-brand-600"
+              aria-hidden
+            />
+          </button>
+        ))}
       </section>
 
       {/* Projects */}
@@ -213,14 +264,16 @@ export default function HomePage() {
           <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" role="list">
             {projects.map((project) => (
               <li key={project.id}>
-                <Link
-                  href={`/projects/${project.id}`}
-                  className="card group block h-full transition-all duration-200 hover:border-brand-200 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
-                >
+                <div className="card group relative h-full transition-all duration-200 hover:border-brand-200 hover:shadow-md">
                   <div className="mb-3 flex items-start justify-between gap-2">
-                    <div className="min-w-0">
+                    <div className="min-w-0 pr-2">
                       <h3 className="font-semibold leading-snug text-slate-900 group-hover:text-brand-700">
-                        {project.name}
+                        <Link
+                          href={`/projects/${project.id}`}
+                          className="rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+                        >
+                          {project.name}
+                        </Link>
                       </h3>
                       {isDemoProject(project.name) && (
                         <span className="mt-1 inline-block rounded-full bg-brand-100 px-2 py-0.5 text-xs font-medium text-brand-700">
@@ -228,36 +281,53 @@ export default function HomePage() {
                         </span>
                       )}
                     </div>
-                    <span className={getRiskBadgeClass(project.riskLevel)}>
-                      {humanize(project.riskLevel)}
-                    </span>
+                    <div className="flex shrink-0 items-center gap-1">
+                      {!isDemoProject(project.name) && (
+                        <button
+                          type="button"
+                          className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 opacity-100 transition-colors hover:bg-red-50 hover:text-red-600 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100"
+                          aria-label={`${copy.home.projectCard.delete}: ${project.name}`}
+                          onClick={() => setDeleteTarget(project)}
+                        >
+                          <Trash2 className="h-4 w-4" aria-hidden />
+                        </button>
+                      )}
+                      <span className={getRiskBadgeClass(project.riskLevel)}>
+                        {humanize(project.riskLevel)}
+                      </span>
+                    </div>
                   </div>
-                  <p className="text-sm leading-relaxed text-slate-600">
-                    {project.propertyAddress}
-                  </p>
-                  <p className="mt-1 text-xs text-slate-400">
-                    {project.state} · {humanize(project.propertyType)}
-                  </p>
-                  {project.purchasePrice && (
-                    <p className="mt-3 text-sm font-semibold text-slate-800">
-                      {formatCurrency(project.purchasePrice)}
+                  <Link
+                    href={`/projects/${project.id}`}
+                    className="block rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+                  >
+                    <p className="text-sm leading-relaxed text-slate-600">
+                      {project.propertyAddress}
                     </p>
-                  )}
-                  <dl className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3 text-xs text-slate-500">
-                    <div>
-                      <dt className="sr-only">Documents</dt>
-                      <dd>{copy.home.projectCard.docs(project._count.documents)}</dd>
-                    </div>
-                    <div>
-                      <dt className="sr-only">Checks</dt>
-                      <dd>{copy.home.projectCard.checks(project._count.checklistItems)}</dd>
-                    </div>
-                    <div>
-                      <dt className="sr-only">{copy.home.projectCard.risk}</dt>
-                      <dd>{copy.home.projectCard.risk}: {project.riskScore}</dd>
-                    </div>
-                  </dl>
-                </Link>
+                    <p className="mt-1 text-xs text-slate-400">
+                      {project.state} · {humanize(project.propertyType)}
+                    </p>
+                    {project.purchasePrice && (
+                      <p className="mt-3 text-sm font-semibold text-slate-800">
+                        {formatCurrency(project.purchasePrice)}
+                      </p>
+                    )}
+                    <dl className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3 text-xs text-slate-500">
+                      <div>
+                        <dt className="sr-only">Documents</dt>
+                        <dd>{copy.home.projectCard.docs(project._count.documents)}</dd>
+                      </div>
+                      <div>
+                        <dt className="sr-only">Checks</dt>
+                        <dd>{copy.home.projectCard.checks(project._count.checklistItems)}</dd>
+                      </div>
+                      <div>
+                        <dt className="sr-only">{copy.home.projectCard.risk}</dt>
+                        <dd>{copy.home.projectCard.risk}: {project.riskScore}</dd>
+                      </div>
+                    </dl>
+                  </Link>
+                </div>
               </li>
             ))}
           </ul>
@@ -270,6 +340,29 @@ export default function HomePage() {
           onCreated={(id) => {
             window.location.href = `/projects/${id}`;
           }}
+        />
+      )}
+
+      {deleteTarget && (
+        <DeleteProjectModal
+          project={{ id: deleteTarget.id, name: deleteTarget.name }}
+          onClose={() => setDeleteTarget(null)}
+          onDeleted={(id) => {
+            setProjects((prev) => prev.filter((p) => p.id !== id));
+          }}
+        />
+      )}
+
+      {statTopic && (
+        <StatExplainerModal
+          topic={statTopic}
+          projectCount={projects.length}
+          frameworkCount={frameworkCount}
+          checkCount={checkCount}
+          categories={categories}
+          demoProjectId={demoProjectId}
+          onClose={() => setStatTopic(null)}
+          onStartProject={() => setShowCreate(true)}
         />
       )}
     </div>

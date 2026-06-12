@@ -23,11 +23,119 @@ export const copy = {
       projects: "Active projects",
       frameworks: "Regulatory frameworks",
       checks: "Compliance checks",
+      learnMore: "Learn more",
+      tapToExplore: "Tap to explore",
+    },
+    statsEducation: {
+      projects: {
+        title: (count: number) =>
+          count === 1 ? "1 active project" : `${count} active projects`,
+        intro:
+          "Each project is a due diligence workspace for one commercial property. Kat walks you through five clear steps — from setup to a finished, audit-ready report.",
+        steps: [
+          {
+            label: "Set up",
+            body: "Add the property address, type, and purchase price so checks are tailored to your asset.",
+          },
+          {
+            label: "Upload documents",
+            body: "Provide financials, leases, valuations, environmental reports, and legal documents.",
+          },
+          {
+            label: "Run analysis",
+            body: "Kat automatically maps your documents to Australian regulatory requirements.",
+          },
+          {
+            label: "Review compliance",
+            body: "Work through each checklist item and record your verification decisions.",
+          },
+          {
+            label: "Finalise report",
+            body: "Review your risk score, compliance summary, and tamper-evident audit trail.",
+          },
+        ],
+        cta: "Start a new project",
+        viewDemo: "View the example project",
+      },
+      frameworks: {
+        title: (count: number) =>
+          `${count} regulatory framework${count === 1 ? "" : "s"}`,
+        intro:
+          "Australian commercial property deals touch several areas of law and regulation. Kat organises these into five frameworks so nothing important is missed.",
+        items: {
+          ncc: {
+            name: "National Construction Code (NCC)",
+            authority: "Australian Building Codes Board",
+            summary:
+              "The building rulebook for commercial properties. Covers how the building is classified, fire safety, accessibility, energy efficiency, and structural integrity.",
+            whyItMatters:
+              "A buyer inherits compliance obligations — fire systems, access ramps, and energy ratings all need to be right.",
+          },
+          apra: {
+            name: "APRA prudential standards",
+            authority: "Australian Prudential Regulation Authority",
+            summary:
+              "The lending safety rules banks follow when financing commercial property. Focuses on valuations, loan-to-value ratios, and whether rental income can withstand stress.",
+            whyItMatters:
+              "If you're borrowing, your lender will assess the deal against these standards. Weak numbers can mean harder finance terms.",
+          },
+          firb: {
+            name: "FIRB foreign investment",
+            authority: "Foreign Investment Review Board",
+            summary:
+              "Checks whether foreign buyers need government approval before acquiring Australian commercial property, including vacant land and sensitive locations.",
+            whyItMatters:
+              "Missing a FIRB requirement can delay settlement or void a transaction entirely.",
+          },
+          environmental: {
+            name: "Environmental & planning",
+            authority: "State EPA and local council",
+            summary:
+              "Covers contamination risk, asbestos management, and whether the property's use matches its planning permit and zoning.",
+            whyItMatters:
+              "Environmental liabilities and planning breaches can cost millions to fix after you buy.",
+          },
+          lease: {
+            name: "Lease & tenancy",
+            authority: "State commercial leases legislation",
+            summary:
+              "Reviews tenant leases for income stability — when leases expire, how rent is reviewed, and what make-good costs tenants owe at exit.",
+            whyItMatters:
+              "For income-producing assets, lease quality often drives value more than the bricks and mortar.",
+          },
+        },
+      },
+      checks: {
+        title: (count: number) =>
+          `${count} compliance check${count === 1 ? "" : "s"}`,
+        intro:
+          "Every project is assessed against a structured checklist drawn from the five regulatory frameworks. Each check maps to documents you upload — Kat flags what's covered and what still needs attention.",
+        howItWorks: [
+          "Upload your due diligence documents (financials, leases, valuations, environmental, legal).",
+          "Kat matches each requirement to the documents on file.",
+          "Items move from pending → in review → compliant as you verify them.",
+          "Your risk score updates based on outstanding issues and severity.",
+        ],
+        priorityNote:
+          "Checks are tagged by priority — critical items (like fire safety or FIRB approval) carry more weight in your risk score.",
+      },
     },
     projectCard: {
       docs: (n: number) => `${n} document${n === 1 ? "" : "s"}`,
       checks: (n: number) => `${n} check${n === 1 ? "" : "s"}`,
       risk: "Risk score",
+      delete: "Delete project",
+    },
+    delete: {
+      title: "Delete this project?",
+      body: (name: string) =>
+        `"${name}" and all its documents, checks, and audit history will be permanently removed. This cannot be undone.`,
+      confirm: "Delete project",
+      cancel: "Keep project",
+      deleting: "Deleting…",
+      success: (name: string) => `"${name}" has been deleted.`,
+      error: "We couldn't delete this project. Please try again.",
+      demoProtected: "The example project cannot be deleted.",
     },
   },
   create: {
