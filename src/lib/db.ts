@@ -3,6 +3,18 @@ import { PrismaClient } from "@prisma/client";
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
 
 function getDatabaseUrl(): string | undefined {
+  const isVercel = process.env.VERCEL === "1";
+
+  if (isVercel) {
+    return (
+      process.env.POSTGRES_PRISMA_URL ??
+      process.env.POSTGRES_URL ??
+      (process.env.DATABASE_URL?.startsWith("postgres")
+        ? process.env.DATABASE_URL
+        : undefined)
+    );
+  }
+
   return (
     process.env.DATABASE_URL ??
     process.env.POSTGRES_PRISMA_URL ??
@@ -26,10 +38,25 @@ if (process.env.NODE_ENV !== "production") {
 export function getDatabaseStatus(): {
   configured: boolean;
   source: string | null;
+  isVercel: boolean;
 } {
-  if (process.env.DATABASE_URL) return { configured: true, source: "DATABASE_URL" };
+  const isVercel = process.env.VERCEL === "1";
+
+  if (isVercel) {
+    if (process.env.POSTGRES_PRISMA_URL)
+      return { configured: true, source: "POSTGRES_PRISMA_URL", isVercel: true };
+    if (process.env.POSTGRES_URL)
+      return { configured: true, source: "POSTGRES_URL", isVercel: true };
+    if (process.env.DATABASE_URL?.startsWith("postgres"))
+      return { configured: true, source: "DATABASE_URL", isVercel: true };
+    return { configured: false, source: null, isVercel: true };
+  }
+
+  if (process.env.DATABASE_URL)
+    return { configured: true, source: "DATABASE_URL", isVercel: false };
   if (process.env.POSTGRES_PRISMA_URL)
-    return { configured: true, source: "POSTGRES_PRISMA_URL" };
-  if (process.env.POSTGRES_URL) return { configured: true, source: "POSTGRES_URL" };
-  return { configured: false, source: null };
+    return { configured: true, source: "POSTGRES_PRISMA_URL", isVercel: false };
+  if (process.env.POSTGRES_URL)
+    return { configured: true, source: "POSTGRES_URL", isVercel: false };
+  return { configured: false, source: null, isVercel: false };
 }

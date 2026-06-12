@@ -1,4 +1,3 @@
-import { execSync } from "child_process";
 import { prisma, getDatabaseStatus } from "@/lib/db";
 
 let schemaReady = false;
@@ -8,20 +7,21 @@ export async function ensureDatabaseReady(): Promise<{ ok: boolean; message: str
   if (schemaReady) return { ok: true, message: "Ready" };
 
   if (!schemaCheckPromise) {
-    schemaCheckPromise = checkAndInitialize();
+    schemaCheckPromise = checkDatabase();
   }
 
   return schemaCheckPromise;
 }
 
-async function checkAndInitialize(): Promise<{ ok: boolean; message: string }> {
+async function checkDatabase(): Promise<{ ok: boolean; message: string }> {
   const status = getDatabaseStatus();
 
   if (!status.configured) {
     return {
       ok: false,
-      message:
-        "Database not connected. In Vercel: Storage → Create Database → Postgres → Connect → Redeploy.",
+      message: status.isVercel
+        ? "Database not connected. In Vercel: Storage → Create Database → Postgres → Connect → Redeploy."
+        : "Database not configured. Set DATABASE_URL in your .env file.",
     };
   }
 
@@ -31,35 +31,20 @@ async function checkAndInitialize(): Promise<{ ok: boolean; message: string }> {
     return { ok: true, message: "Ready" };
   } catch (error) {
     const msg = error instanceof Error ? error.message : String(error);
-    const needsSetup =
+
+    if (
       msg.includes("does not exist") ||
       msg.includes("P2021") ||
-      msg.includes("P1001") ||
       msg.includes("relation") ||
-      msg.includes("no such table");
-
-    if (!needsSetup) {
+      msg.includes("no such table")
+    ) {
       return {
         ok: false,
-        message: `Database error: ${msg}`,
+        message:
+          "Database tables not created yet. Redeploy after connecting Vercel Postgres so the build can set up tables.",
       };
     }
-  }
 
-  try {
-    execSync("npx prisma db push --skip-generate --accept-data-loss", {
-      env: process.env,
-      stdio: "pipe",
-      timeout: 60_000,
-    });
-    schemaReady = true;
-    schemaCheckPromise = null;
-    return { ok: true, message: "Database initialized" };
-  } catch (error) {
-    const msg = error instanceof Error ? error.message : String(error);
-    return {
-      ok: false,
-      message: `Could not set up database tables. ${msg}`,
-    };
+    return { ok: false, message: `Database error: ${msg}` };
   }
 }

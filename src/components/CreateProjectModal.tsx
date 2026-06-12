@@ -28,6 +28,7 @@ export function CreateProjectModal({
   const dialogRef = useRef<HTMLDivElement>(null);
   const firstInputRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
+  const [dbWarning, setDbWarning] = useState<string | null>(null);
   const [form, setForm] = useState({
     name: "",
     propertyAddress: "",
@@ -38,6 +39,15 @@ export function CreateProjectModal({
 
   useEffect(() => {
     firstInputRef.current?.focus();
+
+    fetch("/api/health")
+      .then((res) => res.json())
+      .then((data) => {
+        if (!data.ok) setDbWarning(data.message);
+      })
+      .catch(() => {
+        setDbWarning("Cannot reach the server. Check your connection.");
+      });
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -140,6 +150,13 @@ export function CreateProjectModal({
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
+          {dbWarning && (
+            <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900" role="alert">
+              <p className="font-medium">Database not ready</p>
+              <p className="mt-1 leading-relaxed">{dbWarning}</p>
+            </div>
+          )}
+
           <div>
             <label htmlFor="project-name" className="mb-1.5 block text-sm font-medium text-slate-800">
               {copy.create.fields.name.label}

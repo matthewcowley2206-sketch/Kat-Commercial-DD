@@ -9,20 +9,25 @@ export async function GET() {
       {
         ok: false,
         database: "missing",
-        message:
-          "No database connected. In Vercel, go to Storage → Create Database → Postgres, then redeploy.",
+        isVercel: status.isVercel,
+        message: status.isVercel
+          ? "Add Vercel Postgres: Dashboard → Storage → Create Database → Postgres → Connect to this project → Redeploy. Do not use file:./dev.db on Vercel."
+          : "Set DATABASE_URL in your .env file (file:./dev.db for local dev).",
+        version: process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7) ?? "local",
       },
       { status: 503 }
     );
   }
 
   try {
-    await prisma.$queryRaw`SELECT 1`;
+    await prisma.project.findFirst({ take: 1 });
     return NextResponse.json({
       ok: true,
       database: "connected",
       source: status.source,
+      isVercel: status.isVercel,
       message: "Database is ready.",
+      version: process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7) ?? "local",
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Database connection failed";
@@ -31,7 +36,9 @@ export async function GET() {
         ok: false,
         database: "error",
         source: status.source,
+        isVercel: status.isVercel,
         message,
+        version: process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7) ?? "local",
       },
       { status: 503 }
     );
