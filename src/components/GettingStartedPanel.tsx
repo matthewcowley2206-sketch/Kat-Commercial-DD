@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Check, Compass, X } from "lucide-react";
+import { Check, Compass } from "lucide-react";
 import { copy } from "@/lib/copy";
 import {
   getOnboardingProgress,
@@ -22,7 +22,7 @@ export function GettingStartedPanel({
   onExploreFrameworks,
   onCreateProject,
 }: GettingStartedPanelProps) {
-  const [visible, setVisible] = useState(false);
+  const [hidden, setHidden] = useState(false);
   const [progress, setProgress] = useState({
     viewedDemo: false,
     exploredFrameworks: false,
@@ -36,10 +36,7 @@ export function GettingStartedPanel({
       ...state,
       createdProject: state.createdProject || hasOwnProject,
     });
-    setVisible(!state.dismissed);
   }, [hasOwnProject]);
-
-  if (!visible) return null;
 
   const steps = copy.home.gettingStarted.steps;
   const doneFlags = [
@@ -48,10 +45,13 @@ export function GettingStartedPanel({
     progress.createdProject || hasOwnProject,
   ];
   const doneCount = doneFlags.filter(Boolean).length;
+  const allComplete = doneCount === steps.length;
+
+  if ((allComplete && progress.dismissed) || hidden) return null;
 
   const handleDismiss = () => {
     setOnboardingFlag("dismissed");
-    setVisible(false);
+    setHidden(true);
   };
 
   return (
@@ -60,29 +60,19 @@ export function GettingStartedPanel({
       className="guide-card mb-8 scroll-mt-24"
       aria-labelledby="getting-started-heading"
     >
-      <div className="mb-5 flex items-start justify-between gap-4">
-        <div className="flex gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-brand-100 text-brand-700">
-            <Compass className="h-5 w-5" aria-hidden />
-          </div>
-          <div>
-            <h2 id="getting-started-heading" className="text-lg font-bold text-slate-900">
-              {copy.home.gettingStarted.title}
-            </h2>
-            <p className="mt-1 text-sm text-slate-600">{copy.home.gettingStarted.subtitle}</p>
-            <p className="mt-2 text-xs font-medium text-brand-700">
-              {copy.home.gettingStarted.progress(doneCount, steps.length)}
-            </p>
-          </div>
+      <div className="mb-5 flex gap-3">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-brand-100 text-brand-700">
+          <Compass className="h-5 w-5" aria-hidden />
         </div>
-        <button
-          type="button"
-          onClick={handleDismiss}
-          className="btn-ghost !min-h-[40px] !min-w-[40px] !p-2"
-          aria-label={copy.home.gettingStarted.dismiss}
-        >
-          <X className="h-4 w-4" />
-        </button>
+        <div>
+          <h2 id="getting-started-heading" className="text-lg font-bold text-slate-900">
+            {copy.home.gettingStarted.title}
+          </h2>
+          <p className="mt-1 text-sm text-slate-600">{copy.home.gettingStarted.subtitle}</p>
+          <p className="mt-2 text-xs font-medium text-brand-700">
+            {copy.home.gettingStarted.progress(doneCount, steps.length)}
+          </p>
+        </div>
       </div>
 
       <div className="mb-2 h-1.5 overflow-hidden rounded-full bg-brand-100">
@@ -119,7 +109,10 @@ export function GettingStartedPanel({
                   {done ? <Check className="h-4 w-4" strokeWidth={3} /> : index + 1}
                 </span>
                 <div>
-                  <p className="font-semibold text-slate-900">{step.label}</p>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-brand-600">
+                    {copy.home.gettingStarted.stepLabel(index + 1)}
+                  </p>
+                  <p className="mt-0.5 font-semibold text-slate-900">{step.label}</p>
                   <p className="mt-0.5 text-sm leading-relaxed text-slate-600">{step.body}</p>
                 </div>
               </div>
@@ -160,14 +153,12 @@ export function GettingStartedPanel({
         })}
       </ol>
 
-      {doneCount === steps.length && (
-        <button
-          type="button"
-          className="btn-secondary mt-4 w-full sm:ml-auto sm:w-auto"
-          onClick={handleDismiss}
-        >
-          {copy.home.gettingStarted.dismiss}
-        </button>
+      {allComplete && (
+        <div className="mt-4 flex justify-end">
+          <button type="button" className="btn-secondary" onClick={handleDismiss}>
+            {copy.home.gettingStarted.dismiss}
+          </button>
+        </div>
       )}
     </section>
   );

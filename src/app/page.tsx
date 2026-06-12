@@ -106,25 +106,14 @@ export default function HomePage() {
               {copy.home.subtitle}
             </p>
           </div>
-          <div className="flex w-full shrink-0 flex-col gap-2 sm:w-auto sm:flex-row">
-            {demoProjectId && (
-              <Link
-                href={`/projects/${demoProjectId}`}
-                className="btn-secondary w-full sm:w-auto"
-              >
-                <Sparkles className="h-4 w-4" aria-hidden />
-                {copy.home.viewDemo}
-              </Link>
-            )}
-            <button
-              type="button"
-              className="btn-primary w-full sm:w-auto"
-              onClick={() => setShowCreate(true)}
-            >
-              <Plus className="h-4 w-4" aria-hidden />
-              {copy.home.newProject}
-            </button>
-          </div>
+          <button
+            type="button"
+            className="btn-primary w-full shrink-0 sm:w-auto"
+            onClick={() => setShowCreate(true)}
+          >
+            <Plus className="h-4 w-4" aria-hidden />
+            {copy.home.newProject}
+          </button>
         </div>
       </section>
 
@@ -137,51 +126,10 @@ export default function HomePage() {
         />
       )}
 
-      {demoProjectId && (
-        <section className="mb-8" aria-labelledby="demo-banner-heading">
-          <Link
-            href={`/projects/${demoProjectId}`}
-            className="card group block border-brand-200 bg-gradient-to-br from-brand-50/80 to-white transition-all duration-200 hover:border-brand-300 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
-          >
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex items-start gap-4">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-brand-100 text-brand-700" aria-hidden>
-                  <Sparkles className="h-6 w-6" />
-                </div>
-                <div>
-                  <div className="mb-1 flex items-center gap-2">
-                    <span className="rounded-full bg-brand-100 px-2.5 py-0.5 text-xs font-semibold text-brand-700">
-                      {copy.home.demoBanner.badge}
-                    </span>
-                  </div>
-                  <h2 id="demo-banner-heading" className="text-lg font-semibold text-slate-900 group-hover:text-brand-700">
-                    {copy.home.demoBanner.title}
-                  </h2>
-                  <p className="mt-1 max-w-2xl text-sm leading-relaxed text-slate-600">
-                    {copy.home.demoBanner.body}
-                  </p>
-                </div>
-              </div>
-              <span className="inline-flex items-center gap-1 text-sm font-semibold text-brand-700 group-hover:gap-2 transition-all">
-                {copy.home.demoBanner.cta}
-                <ArrowRight className="h-4 w-4" aria-hidden />
-              </span>
-            </div>
-          </Link>
-        </section>
-      )}
-
-      {/* Stats */}
-      <section className="mb-8 grid gap-3 sm:grid-cols-3 sm:gap-4" aria-label="Overview statistics">
+      {/* Reference stats — supports Step 2 */}
+      <section className="mb-8 grid gap-3 sm:grid-cols-2 sm:gap-4" aria-label="Regulatory reference">
         {(
           [
-            {
-              topic: "projects" as const,
-              value: projects.length,
-              label: copy.home.stats.projects,
-              icon: Building2,
-              iconClass: "bg-brand-50 text-brand-600",
-            },
             {
               topic: "frameworks" as const,
               value: frameworkCount,
@@ -231,8 +179,15 @@ export default function HomePage() {
 
       {/* Projects */}
       <section aria-labelledby="projects-heading">
-        <h2 id="projects-heading" className="sr-only">
-          Your projects
+        <h2
+          id="projects-heading"
+          className={
+            !loading && !error && projects.length > 0
+              ? "mb-4 text-lg font-semibold text-slate-900"
+              : "sr-only"
+          }
+        >
+          {copy.home.projectsHeading}
         </h2>
 
         {loading ? (

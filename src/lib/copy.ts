@@ -8,23 +8,24 @@ export const copy = {
   home: {
     title: "Commercial property due diligence, made simple",
     subtitle:
-      "New here? Follow the three steps below — explore an example, learn the frameworks, then assess your own property.",
+      "Assess Australian commercial property against NCC, APRA, FIRB, and more — from documents to lender-ready.",
     gettingStarted: {
-      title: "New here? Start in 3 steps",
-      subtitle: "No prior experience needed — Kat guides you through each stage.",
-      dismiss: "Got it, thanks",
-      progress: (done: number, total: number) => `${done} of ${total} complete`,
+      title: "Get started in 3 steps",
+      subtitle: "Work through each step in order. Kat guides you from first look to your own assessment.",
+      stepLabel: (n: number) => `Step ${n}`,
+      dismiss: "Hide guide",
+      progress: (done: number, total: number) => `${done} of ${total} steps complete`,
       steps: [
         {
           id: "demo",
           label: "Explore the example project",
-          body: "See a finished Melbourne CBD assessment — documents, compliance, risk, and lender readiness.",
+          body: "Open a finished Melbourne CBD assessment — documents, compliance, risk scores, and audit trail.",
           cta: "Open example",
         },
         {
           id: "frameworks",
           label: "Learn the regulatory frameworks",
-          body: "Tap the framework card below to understand NCC, APRA, FIRB, and more in plain English.",
+          body: "Understand the five frameworks Kat checks against. Tap View frameworks, or explore the reference cards below.",
           cta: "View frameworks",
         },
         {
@@ -35,6 +36,7 @@ export const copy = {
         },
       ],
     },
+    projectsHeading: "Your projects",
     newProject: "Start a project",
     viewDemo: "View example project",
     demoBanner: {
