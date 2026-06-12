@@ -3,11 +3,38 @@ export const copy = {
     name: "Kat Commercial DD",
     tagline: "From property due diligence to lender-ready",
     badge: "Audit-ready",
+    howItWorks: "How it works",
   },
   home: {
-    title: "Your properties, fully assessed",
+    title: "Commercial property due diligence, made simple",
     subtitle:
-      "Upload documents, check Australian regulations, and see bankability — all in one calm, clear workflow.",
+      "New here? Follow the three steps below — explore an example, learn the frameworks, then assess your own property.",
+    gettingStarted: {
+      title: "New here? Start in 3 steps",
+      subtitle: "No prior experience needed — Kat guides you through each stage.",
+      dismiss: "Got it, thanks",
+      progress: (done: number, total: number) => `${done} of ${total} complete`,
+      steps: [
+        {
+          id: "demo",
+          label: "Explore the example project",
+          body: "See a finished Melbourne CBD assessment — documents, compliance, risk, and lender readiness.",
+          cta: "Open example",
+        },
+        {
+          id: "frameworks",
+          label: "Learn the regulatory frameworks",
+          body: "Tap the framework card below to understand NCC, APRA, FIRB, and more in plain English.",
+          cta: "View frameworks",
+        },
+        {
+          id: "create",
+          label: "Start your own assessment",
+          body: "Create a project for your property. Kat walks you through uploads, checks, and your final report.",
+          cta: "Create project",
+        },
+      ],
+    },
     newProject: "Start a project",
     viewDemo: "View example project",
     demoBanner: {
@@ -200,6 +227,15 @@ export const copy = {
       review: "Review checklist",
       complete: "View audit trail",
     },
+    progress: (step: number, total: number, percent: number) =>
+      `Step ${step} of ${total} · ${percent}% through your assessment`,
+  },
+  gamification: {
+    milestonesTitle: "Your progress",
+    milestonesSubtitle: (unlocked: number, total: number) =>
+      `${unlocked} of ${total} milestones reached`,
+    unlocked: "Unlocked",
+    locked: "Up next",
   },
   dashboard: {
     back: "All projects",
@@ -209,6 +245,11 @@ export const copy = {
       overview: "Overview",
       checklist: "Checklist",
       audit: "Audit trail",
+    },
+    tabHints: {
+      overview: "Risk, compliance, documents, and lender readiness",
+      checklist: "Work through each regulatory requirement",
+      audit: "Tamper-evident record of every action",
     },
     sections: {
       lenderReadiness: "Lender readiness",

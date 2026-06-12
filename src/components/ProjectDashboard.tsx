@@ -27,6 +27,9 @@ import { WorkflowProgress } from "@/components/WorkflowProgress";
 import { ChecklistTable } from "@/components/ChecklistTable";
 import { DocumentUpload } from "@/components/DocumentUpload";
 import { LenderReadinessPanel } from "@/components/LenderReadinessPanel";
+import { MilestoneStrip } from "@/components/MilestoneStrip";
+import { isDemoProject } from "@/lib/demo/constants";
+import { setOnboardingFlag } from "@/lib/onboarding/storage";
 import { copy } from "@/lib/copy";
 import { getRiskSummary } from "@/lib/risk/summary";
 import { getJourneyContext, type JourneyStep } from "@/lib/journey";
@@ -68,6 +71,12 @@ export function ProjectDashboard({
   const [showDocumentsDetail, setShowDocumentsDetail] = useState(false);
 
   const journey = getJourneyContext(data);
+
+  useEffect(() => {
+    if (isDemoProject(data.project.name)) {
+      setOnboardingFlag("viewed-demo");
+    }
+  }, [data.project.name]);
 
   const refresh = useCallback(async () => {
     const [dashRes, checkRes] = await Promise.all([
@@ -195,6 +204,13 @@ export function ProjectDashboard({
         />
       </section>
 
+      {isDemoProject(project.name) && (
+        <div className="mb-5 rounded-2xl border border-brand-200 bg-brand-50/60 px-4 py-3 text-sm text-brand-800">
+          <span className="font-semibold">{copy.home.demoBanner.badge} project — </span>
+          {copy.home.demoBanner.body}
+        </div>
+      )}
+
       {/* Tour guide */}
       <div className="mb-6">
         <TourGuide
@@ -203,6 +219,8 @@ export function ProjectDashboard({
           actionLoading={running && journey.step === "analyse"}
         />
       </div>
+
+      <MilestoneStrip data={data} />
 
       {/* Tabs */}
       <div
@@ -224,7 +242,12 @@ export function ProjectDashboard({
             onClick={() => setActiveTab(tab)}
             onKeyDown={(e) => handleTabKeyDown(e, tabs, index)}
           >
-            {copy.dashboard.tabs[tab]}
+            <span className="flex flex-col items-center gap-0.5">
+              <span>{copy.dashboard.tabs[tab]}</span>
+              <span className="hidden text-[10px] font-normal text-slate-400 lg:inline">
+                {copy.dashboard.tabHints[tab]}
+              </span>
+            </span>
           </button>
         ))}
       </div>

@@ -4,6 +4,7 @@ import { Check } from "lucide-react";
 import { copy } from "@/lib/copy";
 import {
   JOURNEY_ORDER,
+  getProgressPercent,
   getStepIndex,
   type JourneyStep,
 } from "@/lib/journey";
@@ -19,6 +20,10 @@ export function JourneyStepper({ currentStep, onStepClick }: JourneyStepperProps
 
   return (
     <nav aria-label={copy.a11y.progressLabel}>
+      <p className="mb-3 hidden text-right text-xs font-medium text-brand-700 md:block">
+        {copy.journey.progress(currentIndex + 1, JOURNEY_ORDER.length, getProgressPercent(currentStep))}
+      </p>
+
       {/* Desktop: horizontal stepper */}
       <ol className="hidden items-center gap-0 md:flex">
         {JOURNEY_ORDER.map((step, index) => {

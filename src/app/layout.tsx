@@ -62,10 +62,18 @@ export default function RootLayout({
                     </p>
                   </div>
                 </Link>
-                <span className="badge shrink-0 bg-green-100 text-green-900">
-                  <span className="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-green-600" aria-hidden />
-                  {copy.app.badge}
-                </span>
+                <div className="flex shrink-0 items-center gap-2">
+                  <Link
+                    href="/#getting-started"
+                    className="hidden min-h-[44px] items-center rounded-xl px-3 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 sm:inline-flex"
+                  >
+                    {copy.app.howItWorks}
+                  </Link>
+                  <span className="badge bg-green-100 text-green-900">
+                    <span className="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-green-600" aria-hidden />
+                    {copy.app.badge}
+                  </span>
+                </div>
               </div>
             </header>
             <main id="main-content" className="flex-1" tabIndex={-1}>

@@ -7,7 +7,9 @@ import { isDemoProject } from "@/lib/demo/constants";
 import { KatLogo } from "@/components/KatLogo";
 import { CreateProjectModal } from "@/components/CreateProjectModal";
 import { DeleteProjectModal } from "@/components/DeleteProjectModal";
+import { GettingStartedPanel } from "@/components/GettingStartedPanel";
 import { StatExplainerModal, type StatTopic } from "@/components/StatExplainerModal";
+import { setOnboardingFlag } from "@/lib/onboarding/storage";
 import { LiveRegion } from "@/components/ui/LiveRegion";
 import { copy } from "@/lib/copy";
 import { getRegulatoryStats } from "@/lib/education/stats";
@@ -126,6 +128,15 @@ export default function HomePage() {
         </div>
       </section>
 
+      {!loading && !error && (
+        <GettingStartedPanel
+          demoProjectId={demoProjectId}
+          hasOwnProject={projects.some((p) => !isDemoProject(p.name))}
+          onExploreFrameworks={() => setStatTopic("frameworks")}
+          onCreateProject={() => setShowCreate(true)}
+        />
+      )}
+
       {demoProjectId && (
         <section className="mb-8" aria-labelledby="demo-banner-heading">
           <Link
@@ -191,7 +202,10 @@ export default function HomePage() {
             key={stat.topic}
             type="button"
             className="card group flex w-full items-center gap-4 text-left transition-all duration-200 hover:border-brand-200 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
-            onClick={() => setStatTopic(stat.topic)}
+            onClick={() => {
+              if (stat.topic === "frameworks") setOnboardingFlag("explored-frameworks");
+              setStatTopic(stat.topic);
+            }}
             aria-label={`${stat.value} ${stat.label}. ${copy.home.stats.tapToExplore}`}
           >
             <div
@@ -338,6 +352,7 @@ export default function HomePage() {
         <CreateProjectModal
           onClose={() => setShowCreate(false)}
           onCreated={(id) => {
+            setOnboardingFlag("created-project");
             window.location.href = `/projects/${id}`;
           }}
         />

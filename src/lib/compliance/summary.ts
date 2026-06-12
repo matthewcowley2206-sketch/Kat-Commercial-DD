@@ -20,7 +20,6 @@ export interface MetricSummary {
 function completionPercent(checklist: ChecklistCounts): number {
   if (checklist.total === 0) return 0;
   const weights = { compliant: 100, in_review: 55, pending: 15, non_compliant: 0 };
-  const reviewed = checklist.compliant + checklist.inReview;
   const weighted =
     checklist.compliant * weights.compliant +
     checklist.inReview * weights.in_review +

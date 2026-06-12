@@ -2,8 +2,11 @@
 
 import { ArrowRight, Sparkles } from "lucide-react";
 import { copy } from "@/lib/copy";
-import type { JourneyContext } from "@/lib/journey";
-import type { JourneyStep } from "@/lib/journey";
+import { getStepIndex, type JourneyContext, type JourneyStep } from "@/lib/journey";
+
+function getStepNumber(step: JourneyStep): number {
+  return getStepIndex(step) + 1;
+}
 
 interface TourGuideProps {
   context: JourneyContext;
@@ -45,6 +48,13 @@ export function TourGuide({ context, onAction, actionLoading }: TourGuideProps) 
           </div>
           <div className="min-w-0">
             <p className="text-xs font-medium uppercase tracking-wide text-brand-600">
+              {copy.journey.progress(
+                getStepNumber(step),
+                5,
+                context.progress
+              )}
+            </p>
+            <p className="mt-0.5 text-xs font-semibold text-slate-700">
               {copy.journey.steps[step].label}
             </p>
             <p className="mt-1 text-base font-medium leading-snug text-slate-900">

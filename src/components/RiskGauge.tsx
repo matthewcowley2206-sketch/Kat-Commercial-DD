@@ -1,7 +1,7 @@
 "use client";
 
 import { CompletionRing } from "@/components/CompletionRing";
-import { getRiskBadgeClass, getRiskColor, humanize } from "@/lib/utils";
+import { getRiskBadgeClass, humanize } from "@/lib/utils";
 
 interface RiskGaugeProps {
   score: number;
