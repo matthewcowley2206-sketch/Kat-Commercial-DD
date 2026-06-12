@@ -24,6 +24,7 @@ import { ChecklistTable } from "@/components/ChecklistTable";
 import { DocumentUpload } from "@/components/DocumentUpload";
 import { LenderReadinessPanel } from "@/components/LenderReadinessPanel";
 import { copy } from "@/lib/copy";
+import { getRiskSummary } from "@/lib/risk/summary";
 import { getJourneyContext, type JourneyStep } from "@/lib/journey";
 import {
   formatCurrency,
@@ -139,6 +140,7 @@ export function ProjectDashboard({
   };
 
   const { project, checklist: summary, documents, workflow, risk, lenderReadiness } = data;
+  const riskSummary = getRiskSummary(project.riskScore, project.riskLevel, risk, summary);
   const tabs: Tab[] = ["overview", "checklist", "audit"];
 
   return (
@@ -236,7 +238,12 @@ export function ProjectDashboard({
             <h2 id="risk-heading" className="mb-4 text-sm font-semibold text-slate-900">
               {copy.dashboard.sections.risk}
             </h2>
-            <RiskGauge score={project.riskScore} level={project.riskLevel} />
+            <RiskGauge
+              score={project.riskScore}
+              level={project.riskLevel}
+              summary={riskSummary.summary}
+              drivers={riskSummary.drivers}
+            />
           </section>
 
           <button

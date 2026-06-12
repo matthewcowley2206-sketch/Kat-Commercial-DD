@@ -239,6 +239,31 @@ export const copy = {
       },
       empty: "Upload financials and a valuation to calculate lending metrics.",
     },
+    risk: {
+      summary: {
+        pending: "Run analysis after uploading documents to generate your risk score and summary.",
+        levels: {
+          low: "Low overall exposure. Key documents are on file and compliance items are largely verified — a solid position for lender review.",
+          medium:
+            "Moderate exposure. Documents are mostly in place but several checks still need broker verification before lender submission.",
+          high:
+            "Elevated exposure. Multiple compliance gaps or missing verifications may affect lender appetite and deal terms.",
+          critical:
+            "Significant risk flags. Critical items need resolution before approaching lenders or proceeding to settlement.",
+        },
+      },
+      drivers: {
+        nonCompliant: (n: number) =>
+          `${n} item${n === 1 ? "" : "s"} flagged as non-compliant`,
+        inReview: (n: number) =>
+          `${n} check${n === 1 ? "" : "s"} awaiting your verification`,
+        pending: (n: number) =>
+          `${n} check${n === 1 ? "" : "s"} pending document review`,
+        allCompliant: "All compliance checks verified",
+        category: (name: string, score: number) =>
+          `${name} contributing at ${score}/100`,
+      },
+    },
     empty: {
       risk: "Run analysis to see your risk score",
       checklist: "Upload documents and run analysis to build your checklist",
