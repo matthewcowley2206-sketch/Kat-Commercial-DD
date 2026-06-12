@@ -503,16 +503,16 @@ export const copy = {
   },
   auth: {
     signInTitle: "Sign in to Kat",
-    signInSubtitle: "Demo access for evaluation — not for production client data",
-    demoSignIn: "Sign in as Demo Broker",
-    orEmail: "or use demo credentials",
+    signInSubtitle: "Enter any email and password to continue — demo access only",
+    demoSignIn: "Quick sign in",
+    orEmail: "or enter any details",
     email: "Email",
     password: "Password",
     signIn: "Sign in",
     signOut: "Sign out",
-    invalidCredentials: "Invalid email or password. Use the demo sign-in or demo@kat.com / demo123",
+    invalidCredentials: "Please enter an email and password",
     demoNote:
-      "This is a demonstration login only. No real authentication or encryption is applied. Do not upload confidential client data until proper security is implemented.",
+      "Any email and password will work. This is a demonstration gate only — not real authentication. Do not upload confidential client data until proper security is implemented.",
   },
   export: {
     button: "Export report",

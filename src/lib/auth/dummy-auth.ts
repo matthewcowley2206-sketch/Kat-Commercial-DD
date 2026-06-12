@@ -1,9 +1,3 @@
-export const DEMO_CREDENTIALS = {
-  email: "demo@kat.com",
-  password: "demo123",
-  name: "Demo Broker",
-} as const;
-
 export interface AuthSession {
   email: string;
   name: string;
@@ -12,19 +6,21 @@ export interface AuthSession {
 
 const SESSION_KEY = "kat-auth-session";
 
+function displayNameFromEmail(email: string): string {
+  const local = email.split("@")[0]?.trim();
+  if (!local) return "Guest";
+  return local.charAt(0).toUpperCase() + local.slice(1);
+}
+
 export function validateLogin(email: string, password: string): AuthSession | null {
   const normalised = email.trim().toLowerCase();
-  if (
-    normalised === DEMO_CREDENTIALS.email &&
-    password === DEMO_CREDENTIALS.password
-  ) {
-    return {
-      email: DEMO_CREDENTIALS.email,
-      name: DEMO_CREDENTIALS.name,
-      loggedInAt: new Date().toISOString(),
-    };
-  }
-  return null;
+  if (!normalised || !password.trim()) return null;
+
+  return {
+    email: normalised,
+    name: displayNameFromEmail(normalised),
+    loggedInAt: new Date().toISOString(),
+  };
 }
 
 export function getSession(): AuthSession | null {

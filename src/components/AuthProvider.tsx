@@ -4,7 +4,6 @@ import { createContext, useCallback, useContext, useEffect, useState } from "rea
 import { LogIn, Shield } from "lucide-react";
 import {
   clearSession,
-  DEMO_CREDENTIALS,
   getSession,
   setSession,
   validateLogin,
@@ -27,7 +26,7 @@ export function useAuth() {
 }
 
 function LoginScreen({ onLogin }: { onLogin: (email: string, password: string) => boolean }) {
-  const [email, setEmail] = useState<string>(DEMO_CREDENTIALS.email);
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
 
@@ -39,9 +38,9 @@ function LoginScreen({ onLogin }: { onLogin: (email: string, password: string) =
     }
   };
 
-  const handleDemoLogin = () => {
+  const handleQuickSignIn = () => {
     setError(null);
-    onLogin(DEMO_CREDENTIALS.email, DEMO_CREDENTIALS.password);
+    onLogin("guest@kat.com", "guest");
   };
 
   return (
@@ -58,7 +57,7 @@ function LoginScreen({ onLogin }: { onLogin: (email: string, password: string) =
             </div>
           </div>
 
-          <button type="button" className="btn-primary mb-4 w-full" onClick={handleDemoLogin}>
+          <button type="button" className="btn-primary mb-4 w-full" onClick={handleQuickSignIn}>
             <LogIn className="h-4 w-4" aria-hidden />
             {copy.auth.demoSignIn}
           </button>
