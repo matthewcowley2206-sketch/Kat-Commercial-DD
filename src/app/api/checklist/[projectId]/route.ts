@@ -3,6 +3,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/db";
 import { createAuditLog } from "@/lib/audit/logger";
 import { emitEvent } from "@/lib/events/bus";
+import { persistProjectRisk } from "@/lib/risk/persist";
 
 const updateSchema = z.object({
   itemId: z.string(),
@@ -61,6 +62,7 @@ export async function PATCH(
     });
 
     emitEvent("checklist_update", projectId, { itemId, status });
+    await persistProjectRisk(projectId);
 
     return NextResponse.json(item);
   } catch (error) {

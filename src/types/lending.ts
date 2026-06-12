@@ -26,6 +26,8 @@ export interface LendingMetrics {
   waleYears: number | null;
   vacancyPct: number | null;
   topTenantPct: number | null;
+  stampDuty?: number;
+  stampDutyPct?: number;
   assumptions: {
     capRate: number;
     interestRate: number;

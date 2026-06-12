@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
+import { AppFooter } from "@/components/AppFooter";
 import { AppHeader } from "@/components/AppHeader";
+import { DisclaimerBanner } from "@/components/DisclaimerBanner";
 import { SkipLink } from "@/components/ui/SkipLink";
 import { Providers } from "@/components/Providers";
 import "./globals.css";
@@ -44,9 +46,11 @@ export default function RootLayout({
           <SkipLink />
           <div className="flex min-h-screen flex-col">
             <AppHeader />
+            <DisclaimerBanner />
             <main id="main-content" className="flex-1" tabIndex={-1}>
               {children}
             </main>
+            <AppFooter />
           </div>
         </Providers>
       </body>

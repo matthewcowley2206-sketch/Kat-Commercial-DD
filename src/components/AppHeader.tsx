@@ -2,11 +2,14 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { LogOut } from "lucide-react";
+import { useAuth } from "@/components/AuthProvider";
 import { KatLogo } from "@/components/KatLogo";
 import { HowItWorksPanel } from "@/components/HowItWorksPanel";
 import { copy } from "@/lib/copy";
 
 export function AppHeader() {
+  const { session, logout } = useAuth();
   const [showHowItWorks, setShowHowItWorks] = useState(false);
 
   return (
@@ -36,10 +39,16 @@ export function AppHeader() {
             >
               {copy.app.howItWorks}
             </button>
-            <span className="badge hidden bg-green-100 text-green-900 sm:inline-flex">
-              <span className="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-green-600" aria-hidden />
-              {copy.app.badge}
-            </span>
+            <span className="hidden text-sm text-slate-500 md:inline">{session?.name}</span>
+            <button
+              type="button"
+              onClick={logout}
+              className="btn-ghost !min-h-[40px] !px-2 text-sm"
+              aria-label={copy.auth.signOut}
+            >
+              <LogOut className="h-4 w-4" aria-hidden />
+              <span className="hidden sm:inline">{copy.auth.signOut}</span>
+            </button>
           </div>
         </div>
       </header>

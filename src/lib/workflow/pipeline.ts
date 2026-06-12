@@ -86,22 +86,44 @@ export async function runWorkflow(projectId: string, actor = "system") {
     });
 
     const evaluations = evaluateChecklist(docTypes);
-    await prisma.checklistItem.deleteMany({ where: { projectId } });
+    const existingByRegulation = new Map(
+      project.checklistItems.map((i) => [i.regulationId, i])
+    );
+    const manualStatuses = new Set(["compliant", "non_compliant", "not_applicable"]);
 
     for (const item of evaluations) {
-      await prisma.checklistItem.create({
-        data: {
-          projectId,
-          regulationId: item.regulationId,
-          category: item.category,
-          title: item.title,
-          description: item.description,
-          status: item.status,
-          priority: item.priority,
-          evidence: item.evidence,
-          notes: item.notes,
-        },
-      });
+      const existing = existingByRegulation.get(item.regulationId);
+      const preservedStatus =
+        existing && manualStatuses.has(existing.status) ? existing.status : item.status;
+
+      if (existing) {
+        await prisma.checklistItem.update({
+          where: { id: existing.id },
+          data: {
+            category: item.category,
+            title: item.title,
+            description: item.description,
+            priority: item.priority,
+            evidence: item.evidence ?? existing.evidence,
+            status: preservedStatus,
+            notes: existing.notes,
+          },
+        });
+      } else {
+        await prisma.checklistItem.create({
+          data: {
+            projectId,
+            regulationId: item.regulationId,
+            category: item.category,
+            title: item.title,
+            description: item.description,
+            status: preservedStatus,
+            priority: item.priority,
+            evidence: item.evidence,
+            notes: item.notes,
+          },
+        });
+      }
     }
 
     emitEvent("checklist_update", projectId, {
@@ -114,14 +136,16 @@ export async function runWorkflow(projectId: string, actor = "system") {
 
     // Stage 4: Risk Scoring
     await updateWorkflowStage(projectId, "risk_scoring", "running");
+    const updatedItems = await prisma.checklistItem.findMany({ where: { projectId } });
     const riskResult = calculateRiskScore({
       uploadedDocTypes: docTypes,
-      checklistStatuses: evaluations.map((e) => ({
+      checklistStatuses: updatedItems.map((e) => ({
         regulationId: e.regulationId,
-        status: e.status,
+        status: e.status as "pending" | "in_review" | "compliant" | "non_compliant" | "not_applicable",
       })),
       purchasePrice: project.purchasePrice,
       state: project.state,
+      propertyType: project.propertyType,
     });
 
     await prisma.riskAssessment.deleteMany({ where: { projectId } });

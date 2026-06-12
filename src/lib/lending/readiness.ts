@@ -1,5 +1,6 @@
 import lendingConfig from "@/../config/lending-readiness.json";
-import { calculateLendingMetrics, estimateStampDuty } from "@/lib/lending/metrics";
+import { estimateStampDuty } from "@/lib/australia/stamp-duty";
+import { calculateLendingMetrics } from "@/lib/lending/metrics";
 import type { DocumentType } from "@/types";
 import type {
   BankabilityLevel,

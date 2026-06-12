@@ -9,6 +9,7 @@ import {
   ArrowLeft,
   RefreshCw,
   Gauge,
+  Download,
 } from "lucide-react";
 import { CompletionRing } from "@/components/CompletionRing";
 import { OverviewMetricCard } from "@/components/OverviewMetricCard";
@@ -186,7 +187,15 @@ export function ProjectDashboard({
               {project.purchasePrice && ` · ${formatCurrency(project.purchasePrice)}`}
             </p>
           </div>
-          <div className="flex shrink-0 items-center gap-2">
+          <div className="flex shrink-0 flex-wrap items-center gap-2">
+            <Link
+              href={`/projects/${project.id}/report`}
+              target="_blank"
+              className="btn-secondary !min-h-[40px] text-sm"
+            >
+              <Download className="h-4 w-4" aria-hidden />
+              {copy.export.button}
+            </Link>
             <span className={getRiskBadgeClass(project.riskLevel)}>
               {humanize(project.riskLevel)}
             </span>

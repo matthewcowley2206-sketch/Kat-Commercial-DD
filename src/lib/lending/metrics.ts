@@ -1,3 +1,4 @@
+import { estimateStampDuty, getStampDutyNote } from "@/lib/australia/stamp-duty";
 import type { DocumentType } from "@/types";
 import type { LendingMetrics, MetricSignal } from "@/types/lending";
 
@@ -81,6 +82,8 @@ export function calculateLendingMetrics(input: MetricsInput): LendingMetrics | n
     : null;
 
   const topTenantPct = hasLeases && hasFinancials ? 22 : null;
+  const stampDuty = estimateStampDuty(valuation, input.state);
+  const stampDutyPct = Math.round((stampDuty / valuation) * 1000) / 10;
 
   const dscrStatus = metricStatus(dscr, 1.35, 1.15, true);
   const lvrStatus = metricStatus(lvr, 60, 70, false);
@@ -100,6 +103,8 @@ export function calculateLendingMetrics(input: MetricsInput): LendingMetrics | n
     waleYears,
     vacancyPct,
     topTenantPct,
+    stampDuty,
+    stampDutyPct,
     assumptions: {
       capRate: Math.round(capRate * 1000) / 10,
       interestRate: Math.round(ASSUMED_RATE * 1000) / 10,
@@ -120,20 +125,12 @@ export function calculateLendingMetrics(input: MetricsInput): LendingMetrics | n
         vacancyStatus,
         hasFinancials ? "From rent roll" : "Upload financials to confirm"
       ),
+      signal(
+        "Stamp duty",
+        `$${stampDuty.toLocaleString("en-AU")}`,
+        stampDutyPct <= 5.5 ? "good" : stampDutyPct <= 7 ? "caution" : "concern",
+        getStampDutyNote(input.state)
+      ),
     ],
   };
-}
-
-export function estimateStampDuty(price: number, state: string): number {
-  const rates: Record<string, number> = {
-    NSW: 0.055,
-    VIC: 0.055,
-    QLD: 0.0525,
-    WA: 0.05,
-    SA: 0.055,
-    TAS: 0.04,
-    ACT: 0.045,
-    NT: 0.05,
-  };
-  return Math.round(price * (rates[state] ?? 0.055));
 }

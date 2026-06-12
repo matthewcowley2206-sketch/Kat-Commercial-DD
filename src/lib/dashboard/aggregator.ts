@@ -71,8 +71,12 @@ export async function getDashboardData(projectId: string): Promise<DashboardData
           })),
           purchasePrice: project.purchasePrice,
           state: project.state,
+          propertyType: project.propertyType,
         })
       : null;
+
+  const syncedRiskScore = risk?.overallScore ?? project.riskScore;
+  const syncedRiskLevel = risk?.level ?? (project.riskLevel as DashboardData["project"]["riskLevel"]);
 
   return {
     project: {
@@ -82,8 +86,8 @@ export async function getDashboardData(projectId: string): Promise<DashboardData
       propertyType: project.propertyType,
       state: project.state,
       status: project.status as DashboardData["project"]["status"],
-      riskScore: project.riskScore,
-      riskLevel: project.riskLevel as DashboardData["project"]["riskLevel"],
+      riskScore: syncedRiskScore,
+      riskLevel: syncedRiskLevel,
       purchasePrice: project.purchasePrice,
       updatedAt: project.updatedAt.toISOString(),
     },

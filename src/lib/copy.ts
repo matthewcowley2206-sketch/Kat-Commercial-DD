@@ -501,8 +501,46 @@ export const copy = {
     error: "Upload failed. Check the file type and size, then try again.",
     missing: "Still needed",
   },
+  auth: {
+    signInTitle: "Sign in to Kat",
+    signInSubtitle: "Demo access for evaluation — not for production client data",
+    demoSignIn: "Sign in as Demo Broker",
+    orEmail: "or use demo credentials",
+    email: "Email",
+    password: "Password",
+    signIn: "Sign in",
+    signOut: "Sign out",
+    invalidCredentials: "Invalid email or password. Use the demo sign-in or demo@kat.com / demo123",
+    demoNote:
+      "This is a demonstration login only. No real authentication or encryption is applied. Do not upload confidential client data until proper security is implemented.",
+  },
+  export: {
+    button: "Export report",
+    title: "Due diligence report",
+    subtitle: "Indicative summary — confirm all findings with qualified advisers",
+    generated: (date: string) => `Generated ${date}`,
+    print: "Print / Save as PDF",
+    backToProject: "Back to project",
+    sections: {
+      summary: "Executive summary",
+      compliance: "Compliance checklist",
+      risk: "Risk assessment",
+      lender: "Lender readiness",
+      documents: "Documents on file",
+      audit: "Audit trail integrity",
+    },
+  },
   checklist: {
-    columns: { item: "Requirement", priority: "Priority", status: "Status", action: "Update status" },
+    columns: {
+      item: "Requirement",
+      priority: "Priority",
+      status: "Status",
+      notes: "Notes",
+      action: "Update status",
+    },
+    notesPlaceholder: "Add verification notes…",
+    notesSave: "Save note",
+    updateError: "Could not save checklist update. Please try again.",
     status: {
       pending: "Pending",
       in_review: "In review",
@@ -524,5 +562,140 @@ export const copy = {
     closeDialog: "Close dialog",
     progressLabel: "Due diligence progress",
     liveUpdates: "Dashboard updates",
+  },
+  legal: {
+    draftNotice: "Draft — for review before live deployment",
+    lastUpdated: (date: string) => `Last updated ${date}`,
+    footer: {
+      privacy: "Privacy policy",
+      terms: "Terms of use",
+      disclaimer: "Disclaimers",
+      copyright: "© Kat Commercial DD. All rights reserved.",
+    },
+    disclaimer: {
+      short:
+        "Kat Commercial DD provides indicative due diligence guidance only. It is not legal, financial, tax, or investment advice. Always verify findings with qualified professionals before making decisions.",
+      banner:
+        "Indicative guidance only — not legal, financial, or lending advice. Scores and checklists require professional verification.",
+    },
+    privacy: {
+      title: "Privacy policy",
+      updated: "12 June 2026",
+      intro:
+        "This draft privacy policy describes how Kat Commercial DD (the \"Service\") handles information during demonstration and evaluation. Review and update with your legal adviser before live deployment with real client data.",
+      sections: [
+        {
+          title: "Information we collect",
+          body:
+            "When you use the Service, we may collect project details (property address, type, purchase price), uploaded documents, checklist decisions, notes, and usage activity recorded in the audit trail.\n\nDemo login stores a session identifier locally in your browser. We do not operate full user account management in the current demonstration version.",
+        },
+        {
+          title: "How we use information",
+          body:
+            "Information is used to generate indicative compliance checklists, risk scores, lender readiness summaries, and audit records within your workspace. We do not sell personal information.",
+        },
+        {
+          title: "Document storage",
+          body:
+            "Uploaded documents may be stored in the application database or server filesystem depending on deployment configuration. Do not upload confidential client data until production security controls (authentication, encryption, access controls) are implemented.",
+        },
+        {
+          title: "Data retention & deletion",
+          body:
+            "Project data persists until you delete a project. Demo projects may be recreated by the system. You should define retention periods and deletion procedures before live use.",
+        },
+        {
+          title: "Your rights",
+          body:
+            "Before live deployment, you should implement processes for access, correction, and deletion requests in line with the Australian Privacy Act 1988 (Cth) and applicable state laws.",
+        },
+        {
+          title: "Contact",
+          body:
+            "For privacy enquiries regarding production deployment, contact your organisation's privacy officer or legal adviser. This draft does not constitute legal advice.",
+        },
+      ],
+    },
+    terms: {
+      title: "Terms of use",
+      updated: "12 June 2026",
+      intro:
+        "These draft terms govern use of the Kat Commercial DD demonstration service. They must be reviewed and replaced with production terms before commercial launch.",
+      sections: [
+        {
+          title: "Acceptance",
+          body:
+            "By accessing the Service, you agree to these terms. If you do not agree, do not use the Service.",
+        },
+        {
+          title: "Demonstration purpose",
+          body:
+            "The current version is provided for evaluation and demonstration. It uses a dummy login and does not provide production-grade security, authentication, or regulatory certification.",
+        },
+        {
+          title: "Permitted use",
+          body:
+            "You may use the Service to explore commercial property due diligence workflows. You must not rely on outputs as a substitute for professional legal, financial, valuation, environmental, or lending advice.",
+        },
+        {
+          title: "User responsibilities",
+          body:
+            "You are responsible for the accuracy of information you enter, documents you upload, and decisions you record. You must comply with applicable laws when handling third-party information.",
+        },
+        {
+          title: "Intellectual property",
+          body:
+            "The Service, including its design, workflows, and content, remains the property of its owner. You retain ownership of documents and data you upload, subject to the privacy policy.",
+        },
+        {
+          title: "Limitation of liability",
+          body:
+            "To the maximum extent permitted by law, the Service is provided \"as is\" without warranties. We are not liable for losses arising from reliance on indicative scores, checklists, or summaries. You assume all risk from property transactions and lending decisions.",
+        },
+        {
+          title: "Changes",
+          body:
+            "These terms may be updated before live deployment. Continued use after changes constitutes acceptance of the revised terms.",
+        },
+      ],
+    },
+    disclaimers: {
+      title: "Disclaimers",
+      updated: "12 June 2026",
+      intro:
+        "Kat Commercial DD produces indicative outputs to support commercial property due diligence. The following disclaimers apply to all use of the Service.",
+      sections: [
+        {
+          title: "Not professional advice",
+          body:
+            "Nothing in the Service constitutes legal, financial, tax, valuation, environmental, or investment advice. Always obtain advice from qualified Australian professionals before exchange, finance, or settlement.",
+        },
+        {
+          title: "Indicative scores & metrics",
+          body:
+            "Risk scores, bankability ratings, DSCR, LVR, WALE, vacancy, and stamp duty figures are heuristic estimates based on document types and assumptions — not parsed financial data. Confirm all lending metrics with your lender's BDM.",
+        },
+        {
+          title: "Regulatory compliance",
+          body:
+            "Checklists reference NCC, APRA, FIRB, environmental, and lease frameworks for guidance only. They do not confirm compliance with any law, regulation, or lender policy. FIRB thresholds and duties are simplified and may not reflect current legislation or your circumstances.",
+        },
+        {
+          title: "Document analysis limitations",
+          body:
+            "The Service does not automatically read or verify document contents. Uploading a document type does not mean its contents have been validated. Human review is required for every checklist item.",
+        },
+        {
+          title: "Audit trail",
+          body:
+            "The tamper-evident audit trail demonstrates record-keeping integrity within the application. It does not constitute a statutory audit, legal sign-off, or lender approval.",
+        },
+        {
+          title: "Demo environment",
+          body:
+            "The dummy login does not protect data from other users with access to the deployment URL. Do not use the demonstration environment for live client matters until proper authentication and security controls are in place.",
+        },
+      ],
+    },
   },
 } as const;

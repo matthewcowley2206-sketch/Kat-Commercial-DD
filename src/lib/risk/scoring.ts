@@ -1,4 +1,5 @@
 import regulationsConfig from "@/../config/regulations.json";
+import { assessFirbRisk } from "@/lib/australia/firb";
 import type {
   ChecklistStatus,
   DocumentType,
@@ -70,16 +71,24 @@ function financialRisk(purchasePrice: number | null, hasFinancials: boolean): Ri
   };
 }
 
-function firbRisk(hasLegal: boolean, state: string): RiskFactor {
-  const sensitiveStates = ["NSW", "VIC", "ACT"];
-  let score = hasLegal ? 30 : 70;
-  if (sensitiveStates.includes(state)) score += 15;
+function firbRisk(
+  hasLegal: boolean,
+  state: string,
+  purchasePrice: number | null,
+  propertyType: string
+): RiskFactor {
+  const assessment = assessFirbRisk({
+    purchasePrice,
+    state,
+    propertyType,
+    hasLegalDocs: hasLegal,
+  });
 
   return {
     name: "FIRB & Foreign Investment",
-    score: Math.min(score, 100),
+    score: assessment.score,
     weight: 2.0,
-    description: `FIRB assessment required for ${state}. ${hasLegal ? "Legal docs available." : "Legal docs missing."}`,
+    description: assessment.factors.join(". "),
   };
 }
 
@@ -115,6 +124,7 @@ export interface RiskInput {
   checklistStatuses: { regulationId: string; status: ChecklistStatus }[];
   purchasePrice: number | null;
   state: string;
+  propertyType?: string;
 }
 
 export function calculateRiskScore(input: RiskInput): RiskResult {
@@ -128,7 +138,12 @@ export function calculateRiskScore(input: RiskInput): RiskResult {
       input.purchasePrice,
       input.uploadedDocTypes.includes("financial_statement")
     ),
-    firbRisk(input.uploadedDocTypes.includes("legal_compliance"), input.state),
+    firbRisk(
+      input.uploadedDocTypes.includes("legal_compliance"),
+      input.state,
+      input.purchasePrice,
+      input.propertyType ?? "other"
+    ),
     environmentalRisk(input.uploadedDocTypes.includes("environmental")),
     leaseRisk(
       input.uploadedDocTypes.includes("lease_agreement"),

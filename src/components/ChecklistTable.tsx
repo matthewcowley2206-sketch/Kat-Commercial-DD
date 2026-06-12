@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useToast } from "@/components/ui/Toast";
 import { copy } from "@/lib/copy";
 import { getStatusBadgeClass, getStatusLabel } from "@/lib/utils";
 
@@ -24,20 +25,48 @@ export function ChecklistTable({
   projectId: string;
   onUpdate: () => void;
 }) {
+  const { toast } = useToast();
   const [updating, setUpdating] = useState<string | null>(null);
+  const [noteDrafts, setNoteDrafts] = useState<Record<string, string>>(() =>
+    Object.fromEntries(items.map((i) => [i.id, i.notes ?? ""]))
+  );
 
-  const handleStatusChange = async (itemId: string, status: string) => {
+  useEffect(() => {
+    setNoteDrafts(Object.fromEntries(items.map((i) => [i.id, i.notes ?? ""])));
+  }, [items]);
+
+  const patchItem = async (
+    itemId: string,
+    status: string,
+    notes?: string
+  ): Promise<boolean> => {
     setUpdating(itemId);
     try {
-      await fetch(`/api/checklist/${projectId}`, {
+      const res = await fetch(`/api/checklist/${projectId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ itemId, status }),
+        body: JSON.stringify({ itemId, status, notes }),
       });
-      onUpdate();
+      if (!res.ok) throw new Error("Update failed");
+      await onUpdate();
+      return true;
+    } catch {
+      toast(copy.checklist.updateError, "error");
+      return false;
     } finally {
       setUpdating(null);
     }
+  };
+
+  const handleStatusChange = async (itemId: string, status: string) => {
+    const notes = noteDrafts[itemId];
+    await patchItem(itemId, status, notes);
+  };
+
+  const handleNotesSave = async (item: ChecklistItem) => {
+    const notes = noteDrafts[item.id] ?? "";
+    if (notes === (item.notes ?? "")) return;
+    await patchItem(item.id, item.status, notes);
   };
 
   const grouped = items.reduce(
@@ -60,7 +89,6 @@ export function ChecklistTable({
             {category}
           </h3>
 
-          {/* Desktop table */}
           <div className="hidden overflow-hidden rounded-2xl border border-slate-200 md:block">
             <table className="w-full text-sm">
               <thead className="bg-slate-50">
@@ -75,6 +103,9 @@ export function ChecklistTable({
                     {copy.checklist.columns.status}
                   </th>
                   <th scope="col" className="px-4 py-3 text-left font-medium text-slate-700">
+                    {copy.checklist.columns.notes}
+                  </th>
+                  <th scope="col" className="px-4 py-3 text-left font-medium text-slate-700">
                     {copy.checklist.columns.action}
                   </th>
                 </tr>
@@ -87,9 +118,6 @@ export function ChecklistTable({
                       <p className="mt-1 text-xs leading-relaxed text-slate-500">
                         {item.description}
                       </p>
-                      {item.notes && (
-                        <p className="mt-1 text-xs italic text-slate-400">{item.notes}</p>
-                      )}
                     </td>
                     <td className="px-4 py-4">
                       <span
@@ -108,6 +136,18 @@ export function ChecklistTable({
                       <span className={getStatusBadgeClass(item.status)}>
                         {getStatusLabel(item.status)}
                       </span>
+                    </td>
+                    <td className="px-4 py-4">
+                      <textarea
+                        className="input min-h-[72px] resize-y py-2 text-sm"
+                        value={noteDrafts[item.id] ?? ""}
+                        placeholder={copy.checklist.notesPlaceholder}
+                        disabled={updating === item.id}
+                        onChange={(e) =>
+                          setNoteDrafts((prev) => ({ ...prev, [item.id]: e.target.value }))
+                        }
+                        onBlur={() => handleNotesSave(item)}
+                      />
                     </td>
                     <td className="px-4 py-4">
                       <label className="sr-only" htmlFor={`status-${item.id}`}>
@@ -134,7 +174,6 @@ export function ChecklistTable({
             </table>
           </div>
 
-          {/* Mobile cards */}
           <ul className="space-y-3 md:hidden" role="list">
             {categoryItems.map((item) => (
               <li key={item.id} className="rounded-2xl border border-slate-200 bg-white p-4">
@@ -158,9 +197,23 @@ export function ChecklistTable({
                 <p className="mt-1 text-sm leading-relaxed text-slate-500">
                   {item.description}
                 </p>
-                {item.notes && (
-                  <p className="mt-2 text-xs italic text-slate-400">{item.notes}</p>
-                )}
+                <label
+                  htmlFor={`notes-mobile-${item.id}`}
+                  className="mt-4 block text-xs font-medium text-slate-600"
+                >
+                  {copy.checklist.columns.notes}
+                </label>
+                <textarea
+                  id={`notes-mobile-${item.id}`}
+                  className="input mt-1 min-h-[72px] resize-y"
+                  value={noteDrafts[item.id] ?? ""}
+                  placeholder={copy.checklist.notesPlaceholder}
+                  disabled={updating === item.id}
+                  onChange={(e) =>
+                    setNoteDrafts((prev) => ({ ...prev, [item.id]: e.target.value }))
+                  }
+                  onBlur={() => handleNotesSave(item)}
+                />
                 <label
                   htmlFor={`status-mobile-${item.id}`}
                   className="mt-4 block text-xs font-medium text-slate-600"

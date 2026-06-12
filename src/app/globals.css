@@ -199,4 +199,25 @@
       animation: none;
     }
   }
+
+  @media print {
+    body {
+      background: white !important;
+    }
+
+    header,
+    footer,
+    .no-print {
+      display: none !important;
+    }
+
+    .report-root {
+      max-width: none;
+      padding: 0;
+    }
+
+    main {
+      padding: 0 !important;
+    }
+  }
 }
