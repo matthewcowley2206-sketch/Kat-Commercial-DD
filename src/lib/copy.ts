@@ -92,6 +92,32 @@ export const copy = {
     emptyTitle: "Begin with your first property",
     emptyBody:
       "Not sure where to start? Open the example project to see a full assessment, then create your own when you're ready.",
+    processWorkflow: {
+      title: "The due diligence workflow",
+      subtitle: "Five stages from property setup to a lender-ready, audit-trail report.",
+      steps: [
+        {
+          label: "Set up",
+          body: "Add your property details and purchase price",
+        },
+        {
+          label: "Upload",
+          body: "Provide financials, leases, valuations, and legal docs",
+        },
+        {
+          label: "Analyse",
+          body: "Kat maps documents to Australian regulatory frameworks",
+        },
+        {
+          label: "Review",
+          body: "Verify compliance, assess risk, and check lender readiness",
+        },
+        {
+          label: "Finalise",
+          body: "Complete your report with a tamper-evident audit trail",
+        },
+      ],
+    },
     stats: {
       projects: "Active projects",
       frameworks: "Regulatory frameworks",

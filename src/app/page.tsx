@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Plus, Building2, Shield, ClipboardCheck, Sparkles, ArrowRight, Trash2 } from "lucide-react";
 import { isDemoProject } from "@/lib/demo/constants";
 import { HomeHero } from "@/components/HomeHero";
+import { ProcessWorkflow } from "@/components/ProcessWorkflow";
 import { CreateProjectModal } from "@/components/CreateProjectModal";
 import { DeleteProjectModal } from "@/components/DeleteProjectModal";
 import { GettingStartedPanel } from "@/components/GettingStartedPanel";
@@ -95,6 +96,8 @@ export default function HomePage() {
           onCreateProject={() => setShowCreate(true)}
         />
       )}
+
+      <ProcessWorkflow />
 
       {/* Reference stats — supports Step 2 */}
       <section className="mb-8 grid gap-3 sm:grid-cols-2 sm:gap-4" aria-label="Regulatory reference">
