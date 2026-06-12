@@ -178,10 +178,24 @@
     50% { opacity: 1; transform: scale(1.2); }
   }
 
+  .animate-slide-in-right {
+    animation: slide-in-right 0.25s ease-out;
+  }
+
+  @keyframes slide-in-right {
+    from {
+      transform: translateX(100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .kat-logo-float,
     .kat-logo-glow,
-    .kat-calculator-pulse {
+    .kat-calculator-pulse,
+    .animate-slide-in-right {
       animation: none;
     }
   }

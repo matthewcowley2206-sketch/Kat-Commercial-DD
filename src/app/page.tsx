@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Plus, Building2, Shield, ClipboardCheck, Sparkles, ArrowRight, Trash2 } from "lucide-react";
 import { isDemoProject } from "@/lib/demo/constants";
-import { KatLogo } from "@/components/KatLogo";
+import { HomeHero } from "@/components/HomeHero";
 import { CreateProjectModal } from "@/components/CreateProjectModal";
 import { DeleteProjectModal } from "@/components/DeleteProjectModal";
 import { GettingStartedPanel } from "@/components/GettingStartedPanel";
@@ -85,37 +85,7 @@ export default function HomePage() {
     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-10 lg:px-8">
       <LiveRegion message={loading ? copy.a11y.loading : ""} />
 
-      {/* Hero */}
-      <section className="mb-8 sm:mb-10" aria-labelledby="home-heading">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div className="max-w-2xl">
-            <div className="mb-4 flex items-center gap-4">
-              <KatLogo size="lg" />
-              <div>
-                <p className="text-sm font-semibold text-brand-600">{copy.app.name}</p>
-                <p className="text-xs text-slate-500">{copy.app.tagline}</p>
-              </div>
-            </div>
-            <h1
-              id="home-heading"
-              className="text-balance text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl"
-            >
-              {copy.home.title}
-            </h1>
-            <p className="mt-3 text-base leading-relaxed text-slate-600 sm:text-lg">
-              {copy.home.subtitle}
-            </p>
-          </div>
-          <button
-            type="button"
-            className="btn-primary w-full shrink-0 sm:w-auto"
-            onClick={() => setShowCreate(true)}
-          >
-            <Plus className="h-4 w-4" aria-hidden />
-            {copy.home.newProject}
-          </button>
-        </div>
-      </section>
+      <HomeHero onStartProject={() => setShowCreate(true)} />
 
       {!loading && !error && (
         <GettingStartedPanel

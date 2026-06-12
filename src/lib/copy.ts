@@ -5,10 +5,54 @@ export const copy = {
     badge: "Audit-ready",
     howItWorks: "How it works",
   },
+  howItWorks: {
+    title: "From documents to lender-ready",
+    intro:
+      "Kat guides you through Australian commercial property due diligence in a clear, step-by-step workflow — no prior experience needed.",
+    steps: [
+      {
+        label: "Set up your property",
+        body: "Add the address, property type, state, and purchase price. Kat tailors checks to your asset and jurisdiction.",
+      },
+      {
+        label: "Upload your documents",
+        body: "Provide financials, leases, valuations, environmental reports, and legal documents. Kat maps them to regulatory requirements.",
+      },
+      {
+        label: "Run automated analysis",
+        body: "Kat evaluates your documents against NCC, APRA, FIRB, environmental, and lease frameworks — building your compliance checklist.",
+      },
+      {
+        label: "Review compliance & risk",
+        body: "Work through each checklist item, record your decisions, and see your risk score with plain-English drivers.",
+      },
+      {
+        label: "Assess lender readiness",
+        body: "Review bankability indicators — income quality, title security, insurance, and capex — before you approach a lender.",
+      },
+      {
+        label: "Finalise your audit trail",
+        body: "Every action is logged in a tamper-evident audit trail, giving you an audit-ready record of your due diligence.",
+      },
+    ],
+    footer:
+      "New to commercial property? Start with the example project on the homepage, then create your own assessment when you're ready.",
+    getStarted: "See getting started guide",
+  },
   home: {
     title: "Commercial property due diligence, made simple",
     subtitle:
       "Assess Australian commercial property against NCC, APRA, FIRB, and more — from documents to lender-ready.",
+    hero: {
+      imageAlt:
+        "A diverse professional team including women reviewing commercial property documents in a modern office overlooking city buildings",
+      highlights: [
+        "NCC & building compliance",
+        "APRA lending standards",
+        "FIRB & foreign investment",
+        "Lender readiness",
+      ],
+    },
     gettingStarted: {
       title: "Get started in 3 steps",
       subtitle: "Work through each step in order. Kat guides you from first look to your own assessment.",
