@@ -33,6 +33,7 @@ import { setOnboardingFlag } from "@/lib/onboarding/storage";
 import { copy } from "@/lib/copy";
 import { getRiskSummary } from "@/lib/risk/summary";
 import { getJourneyContext, type JourneyStep } from "@/lib/journey";
+import { formatAuditSummary } from "@/lib/audit/summary";
 import {
   formatCurrency,
   formatDate,
@@ -378,21 +379,26 @@ export function ProjectDashboard({
               {data.recentActivity.length === 0 ? (
                 <li className="text-sm text-slate-500">{copy.dashboard.empty.activity}</li>
               ) : (
-                data.recentActivity.map((log) => (
-                  <li
-                    key={log.id}
-                    className="flex items-start justify-between gap-3 rounded-xl bg-slate-50 px-4 py-3"
-                  >
-                    <div className="min-w-0">
-                      <p className="text-sm font-medium text-slate-800">
-                        {getAuditActionLabel(log.action)}
-                      </p>
-                      <p className="text-xs text-slate-500">
-                        {log.actor} · {formatDate(log.createdAt)}
-                      </p>
-                    </div>
-                  </li>
-                ))
+                data.recentActivity.map((log) => {
+                  const { summary, detail } = formatAuditSummary(log.action, log.details);
+                  return (
+                    <li
+                      key={log.id}
+                      className="flex items-start justify-between gap-3 rounded-xl bg-slate-50 px-4 py-3"
+                    >
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium text-slate-800">
+                          {getAuditActionLabel(log.action)}
+                        </p>
+                        <p className="mt-0.5 text-sm text-slate-600">{summary}</p>
+                        {detail && <p className="mt-0.5 text-xs text-slate-500">{detail}</p>}
+                        <p className="mt-1 text-xs text-slate-400">
+                          {log.actor} · {formatDate(log.createdAt)}
+                        </p>
+                      </div>
+                    </li>
+                  );
+                })
               )}
             </ul>
           </section>
@@ -517,25 +523,35 @@ function AuditTrail({ projectId }: { projectId: string }) {
         </span>
       </div>
       <ol className="space-y-3" role="list">
-        {auditData.logs.map((log) => (
-          <li
-            key={log.id}
-            className="rounded-2xl border border-slate-200 p-4 font-mono text-xs"
-          >
-            <div className="flex flex-col gap-1 sm:flex-row sm:justify-between">
-              <span className="font-sans text-sm font-medium text-slate-800">
-                {getAuditActionLabel(log.action)}
-              </span>
-              <time className="font-sans text-slate-400" dateTime={log.createdAt}>
-                {formatDate(log.createdAt)}
-              </time>
-            </div>
-            <p className="mt-2 font-sans text-slate-500">By {log.actor}</p>
-            <p className="mt-1 break-all text-slate-400" aria-label="Integrity hash">
-              #{log.hash.slice(0, 20)}…
-            </p>
-          </li>
-        ))}
+        {auditData.logs.map((log) => {
+          const { summary, detail } = formatAuditSummary(log.action, log.details);
+          return (
+            <li
+              key={log.id}
+              className="rounded-2xl border border-slate-200 p-4"
+            >
+              <div className="flex flex-col gap-1 sm:flex-row sm:justify-between">
+                <span className="text-sm font-medium text-slate-800">
+                  {getAuditActionLabel(log.action)}
+                </span>
+                <time className="text-xs text-slate-400" dateTime={log.createdAt}>
+                  {formatDate(log.createdAt)}
+                </time>
+              </div>
+              <p className="mt-2 text-sm text-slate-700">{summary}</p>
+              {detail && <p className="mt-1 text-sm text-slate-500">{detail}</p>}
+              <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-400">
+                <span>By {log.actor}</span>
+                <span
+                  className="text-slate-300"
+                  title={`${copy.audit.hashTooltip}: ${log.hash}`}
+                >
+                  {copy.audit.verifiedEntry}
+                </span>
+              </div>
+            </li>
+          );
+        })}
       </ol>
     </section>
   );

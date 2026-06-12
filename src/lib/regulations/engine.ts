@@ -20,6 +20,14 @@ export function getCategoryById(id: string): RegulationCategory | undefined {
   return config.categories.find((c) => c.id === id);
 }
 
+export function getRegulationTitle(regulationId: string): string | undefined {
+  for (const category of config.categories) {
+    const item = category.items.find((i) => i.id === regulationId);
+    if (item) return item.title;
+  }
+  return undefined;
+}
+
 export function getRequiredDocumentTypes(): DocumentType[] {
   return Object.entries(config.documentTypes)
     .filter(([, meta]) => meta.required)

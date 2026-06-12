@@ -33,6 +33,11 @@ export async function PATCH(
     const body = await request.json();
     const { itemId, status, notes } = updateSchema.parse(body);
 
+    const existing = await prisma.checklistItem.findUnique({ where: { id: itemId } });
+    if (!existing) {
+      return NextResponse.json({ error: "Checklist item not found" }, { status: 404 });
+    }
+
     const item = await prisma.checklistItem.update({
       where: { id: itemId },
       data: {
@@ -46,7 +51,13 @@ export async function PATCH(
       projectId,
       action: "checklist_updated",
       actor: "user",
-      details: { itemId, regulationId: item.regulationId, status, notes },
+      details: {
+        regulationId: item.regulationId,
+        title: item.title,
+        previousStatus: existing.status,
+        status,
+        notes,
+      },
     });
 
     emitEvent("checklist_update", projectId, { itemId, status });

@@ -443,6 +443,8 @@ export const copy = {
     valid: "Integrity verified",
     invalid: "Integrity issue detected",
     entries: (n: number) => `${n} recorded action${n === 1 ? "" : "s"}`,
+    verifiedEntry: "Verified entry",
+    hashTooltip: "Tamper-evident integrity hash for this audit record",
   },
   a11y: {
     skipToMain: "Skip to main content",
