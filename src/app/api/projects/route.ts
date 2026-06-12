@@ -3,6 +3,8 @@ import { z } from "zod";
 import { prisma, getDatabaseStatus } from "@/lib/db";
 import { ensureDatabaseReady } from "@/lib/ensure-db";
 import { createAuditLog } from "@/lib/audit/logger";
+import { ensureDemoProject } from "@/lib/demo/ensure-demo";
+import { isDemoProject } from "@/lib/demo/constants";
 
 const createProjectSchema = z.object({
   name: z.string().min(1, "Project name is required").max(200),
@@ -60,6 +62,8 @@ export async function GET() {
       return NextResponse.json({ error: db.message }, { status: 503 });
     }
 
+    const demoProjectId = await ensureDemoProject();
+
     const projects = await prisma.project.findMany({
       orderBy: { updatedAt: "desc" },
       select: {
@@ -78,7 +82,14 @@ export async function GET() {
       },
     });
 
-    return NextResponse.json(projects);
+    const sorted = [...projects].sort((a, b) => {
+      const aDemo = isDemoProject(a.name) ? 1 : 0;
+      const bDemo = isDemoProject(b.name) ? 1 : 0;
+      if (aDemo !== bDemo) return bDemo - aDemo;
+      return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+    });
+
+    return NextResponse.json({ projects: sorted, demoProjectId });
   } catch (error) {
     console.error("GET /api/projects error:", error);
     return NextResponse.json(

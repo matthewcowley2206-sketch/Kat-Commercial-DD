@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Plus, Building2, Shield, ClipboardCheck } from "lucide-react";
+import { Plus, Building2, Shield, ClipboardCheck, Sparkles, ArrowRight } from "lucide-react";
+import { isDemoProject } from "@/lib/demo/constants";
 import { KatLogo } from "@/components/KatLogo";
 import { CreateProjectModal } from "@/components/CreateProjectModal";
 import { LiveRegion } from "@/components/ui/LiveRegion";
@@ -25,6 +26,7 @@ interface ProjectSummary {
 
 export default function HomePage() {
   const [projects, setProjects] = useState<ProjectSummary[]>([]);
+  const [demoProjectId, setDemoProjectId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showCreate, setShowCreate] = useState(false);
@@ -33,7 +35,9 @@ export default function HomePage() {
     try {
       const res = await fetch("/api/projects");
       if (!res.ok) throw new Error("API error");
-      setProjects(await res.json());
+      const data = await res.json();
+      setProjects(data.projects ?? data);
+      setDemoProjectId(data.demoProjectId ?? null);
       setError(null);
     } catch {
       setError(
@@ -73,16 +77,61 @@ export default function HomePage() {
               {copy.home.subtitle}
             </p>
           </div>
-          <button
-            type="button"
-            className="btn-primary w-full shrink-0 sm:w-auto"
-            onClick={() => setShowCreate(true)}
-          >
-            <Plus className="h-4 w-4" aria-hidden />
-            {copy.home.newProject}
-          </button>
+          <div className="flex w-full shrink-0 flex-col gap-2 sm:w-auto sm:flex-row">
+            {demoProjectId && (
+              <Link
+                href={`/projects/${demoProjectId}`}
+                className="btn-secondary w-full sm:w-auto"
+              >
+                <Sparkles className="h-4 w-4" aria-hidden />
+                {copy.home.viewDemo}
+              </Link>
+            )}
+            <button
+              type="button"
+              className="btn-primary w-full sm:w-auto"
+              onClick={() => setShowCreate(true)}
+            >
+              <Plus className="h-4 w-4" aria-hidden />
+              {copy.home.newProject}
+            </button>
+          </div>
         </div>
       </section>
+
+      {demoProjectId && (
+        <section className="mb-8" aria-labelledby="demo-banner-heading">
+          <Link
+            href={`/projects/${demoProjectId}`}
+            className="card group block border-brand-200 bg-gradient-to-br from-brand-50/80 to-white transition-all duration-200 hover:border-brand-300 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+          >
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-start gap-4">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-brand-100 text-brand-700" aria-hidden>
+                  <Sparkles className="h-6 w-6" />
+                </div>
+                <div>
+                  <div className="mb-1 flex items-center gap-2">
+                    <span className="rounded-full bg-brand-100 px-2.5 py-0.5 text-xs font-semibold text-brand-700">
+                      {copy.home.demoBanner.badge}
+                    </span>
+                  </div>
+                  <h2 id="demo-banner-heading" className="text-lg font-semibold text-slate-900 group-hover:text-brand-700">
+                    {copy.home.demoBanner.title}
+                  </h2>
+                  <p className="mt-1 max-w-2xl text-sm leading-relaxed text-slate-600">
+                    {copy.home.demoBanner.body}
+                  </p>
+                </div>
+              </div>
+              <span className="inline-flex items-center gap-1 text-sm font-semibold text-brand-700 group-hover:gap-2 transition-all">
+                {copy.home.demoBanner.cta}
+                <ArrowRight className="h-4 w-4" aria-hidden />
+              </span>
+            </div>
+          </Link>
+        </section>
+      )}
 
       {/* Stats */}
       <section className="mb-8 grid gap-3 sm:grid-cols-3 sm:gap-4" aria-label="Overview statistics">
@@ -143,14 +192,22 @@ export default function HomePage() {
             <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-slate-500">
               {copy.home.emptyBody}
             </p>
-            <button
-              type="button"
-              className="btn-primary mt-6"
-              onClick={() => setShowCreate(true)}
-            >
-              <Plus className="h-4 w-4" aria-hidden />
-              {copy.home.newProject}
-            </button>
+            <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              {demoProjectId && (
+                <Link href={`/projects/${demoProjectId}`} className="btn-primary">
+                  <Sparkles className="h-4 w-4" aria-hidden />
+                  {copy.home.viewDemo}
+                </Link>
+              )}
+              <button
+                type="button"
+                className={demoProjectId ? "btn-secondary" : "btn-primary"}
+                onClick={() => setShowCreate(true)}
+              >
+                <Plus className="h-4 w-4" aria-hidden />
+                {copy.home.newProject}
+              </button>
+            </div>
           </div>
         ) : (
           <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" role="list">
@@ -161,9 +218,16 @@ export default function HomePage() {
                   className="card group block h-full transition-all duration-200 hover:border-brand-200 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
                 >
                   <div className="mb-3 flex items-start justify-between gap-2">
-                    <h3 className="font-semibold leading-snug text-slate-900 group-hover:text-brand-700">
-                      {project.name}
-                    </h3>
+                    <div className="min-w-0">
+                      <h3 className="font-semibold leading-snug text-slate-900 group-hover:text-brand-700">
+                        {project.name}
+                      </h3>
+                      {isDemoProject(project.name) && (
+                        <span className="mt-1 inline-block rounded-full bg-brand-100 px-2 py-0.5 text-xs font-medium text-brand-700">
+                          {copy.home.demoBanner.badge}
+                        </span>
+                      )}
+                    </div>
                     <span className={getRiskBadgeClass(project.riskLevel)}>
                       {humanize(project.riskLevel)}
                     </span>

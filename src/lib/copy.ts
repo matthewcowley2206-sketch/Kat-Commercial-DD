@@ -9,9 +9,16 @@ export const copy = {
     subtitle:
       "Upload documents, check Australian regulations, and see risk — all in one calm, clear workflow.",
     newProject: "Start a project",
+    viewDemo: "View example project",
+    demoBanner: {
+      title: "See a completed assessment",
+      body: "Explore a finished due diligence on a Melbourne CBD office — documents, compliance checks, risk scores, and audit trail included.",
+      cta: "Open example project",
+      badge: "Example",
+    },
     emptyTitle: "Begin with your first property",
     emptyBody:
-      "Tell us about the asset. We'll walk you through uploads, compliance checks, and your final report.",
+      "Not sure where to start? Open the example project to see a full assessment, then create your own when you're ready.",
     stats: {
       projects: "Active projects",
       frameworks: "Regulatory frameworks",
