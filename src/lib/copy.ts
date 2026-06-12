@@ -1,13 +1,13 @@
 export const copy = {
   app: {
     name: "Kat Commercial DD",
-    tagline: "Empowering Confident Commercial decisions",
+    tagline: "From property DD to lender-ready",
     badge: "Audit-ready",
   },
   home: {
     title: "Your properties, fully assessed",
     subtitle:
-      "Upload documents, check Australian regulations, and see risk — all in one calm, clear workflow.",
+      "Upload documents, check Australian regulations, and see bankability — all in one calm, clear workflow.",
     newProject: "Start a project",
     viewDemo: "View example project",
     demoBanner: {
@@ -200,6 +200,7 @@ export const copy = {
       audit: "Audit trail",
     },
     sections: {
+      lenderReadiness: "Lender readiness",
       risk: "Risk score",
       compliance: "Compliance at a glance",
       documents: "Documents",
@@ -209,6 +210,34 @@ export const copy = {
       activity: "Recent activity",
       checklist: "Regulatory checklist",
       audit: "Audit trail",
+    },
+    lenderReadiness: {
+      title: "Lender readiness",
+      subtitle: "From property DD to bankability — what lenders will scrutinise",
+      bankability: "Bankability score",
+      progress: (complete: number, total: number) =>
+        `${complete} of ${total} areas complete`,
+      indicative: "Indicative — confirm with lender BDM",
+      levels: {
+        strong: "Strong",
+        adequate: "Adequate",
+        marginal: "Marginal",
+        weak: "Weak",
+        pending: "Pending",
+      },
+      status: {
+        not_started: "Not started",
+        in_progress: "In progress",
+        complete: "Complete",
+      },
+      viewDetails: "View details",
+      metrics: {
+        valuation: "Indicative valuation",
+        loanAmount: "Loan amount (65% LVR)",
+        noi: "Net operating income",
+        assumptions: "Assumptions",
+      },
+      empty: "Upload financials and a valuation to calculate lending metrics.",
     },
     empty: {
       risk: "Run analysis to see your risk score",

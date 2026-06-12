@@ -1,0 +1,159 @@
+{
+  "version": "2024.1",
+  "categories": [
+    {
+      "id": "income_quality",
+      "name": "Income quality",
+      "description": "Tenant mix, lease expiry profile, and rental income durability",
+      "items": [
+        {
+          "id": "inc-001",
+          "title": "Weighted average lease expiry (WALE)",
+          "description": "How long until a significant portion of rental income expires",
+          "documentTypes": ["lease_agreement", "financial_statement"],
+          "priority": "critical"
+        },
+        {
+          "id": "inc-002",
+          "title": "Vacancy & occupancy",
+          "description": "Current vacancy rate and letting-up risk",
+          "documentTypes": ["financial_statement"],
+          "priority": "high"
+        },
+        {
+          "id": "inc-003",
+          "title": "Tenant concentration",
+          "description": "Reliance on a single tenant for majority of income",
+          "documentTypes": ["lease_agreement", "financial_statement"],
+          "priority": "high"
+        },
+        {
+          "id": "inc-004",
+          "title": "Rent review profile",
+          "description": "Upcoming CPI, fixed, or market rent reviews",
+          "documentTypes": ["lease_agreement"],
+          "priority": "medium"
+        }
+      ]
+    },
+    {
+      "id": "title_security",
+      "name": "Title & security",
+      "description": "Encumbrances, charges, and clean first-mortgage security",
+      "items": [
+        {
+          "id": "title-001",
+          "title": "Existing mortgages & charges",
+          "description": "Mortgages or charges to be discharged at settlement",
+          "documentTypes": ["legal_compliance"],
+          "priority": "critical"
+        },
+        {
+          "id": "title-002",
+          "title": "Easements & restrictions",
+          "description": "Easements affecting access, use, or value",
+          "documentTypes": ["legal_compliance"],
+          "priority": "high"
+        },
+        {
+          "id": "title-003",
+          "title": "Caveats & encumbrances",
+          "description": "Third-party interests registered on title",
+          "documentTypes": ["legal_compliance"],
+          "priority": "high"
+        },
+        {
+          "id": "title-004",
+          "title": "PPSR & chattel leases",
+          "description": "Security interests over plant, equipment, or fit-out",
+          "documentTypes": ["legal_compliance", "lease_agreement"],
+          "priority": "medium"
+        }
+      ]
+    },
+    {
+      "id": "insurance",
+      "name": "Insurance",
+      "description": "Building and liability cover required by lenders",
+      "items": [
+        {
+          "id": "ins-001",
+          "title": "Building sum insured",
+          "description": "Replacement cost cover adequate for lender requirements",
+          "documentTypes": ["legal_compliance"],
+          "priority": "critical"
+        },
+        {
+          "id": "ins-002",
+          "title": "Public liability",
+          "description": "Minimum public liability cover in place",
+          "documentTypes": ["legal_compliance"],
+          "priority": "high"
+        },
+        {
+          "id": "ins-003",
+          "title": "Business interruption",
+          "description": "Loss-of-rent or business interruption cover where applicable",
+          "documentTypes": ["legal_compliance", "financial_statement"],
+          "priority": "medium"
+        }
+      ]
+    },
+    {
+      "id": "transaction",
+      "name": "Transaction structure",
+      "description": "GST, stamp duty, and borrower entity considerations",
+      "items": [
+        {
+          "id": "txn-001",
+          "title": "GST going concern",
+          "description": "Whether the sale qualifies as a GST going concern",
+          "documentTypes": ["legal_compliance", "financial_statement"],
+          "priority": "high"
+        },
+        {
+          "id": "txn-002",
+          "title": "Stamp duty estimate",
+          "description": "State transfer duty exposure on acquisition",
+          "documentTypes": ["legal_compliance"],
+          "priority": "medium"
+        },
+        {
+          "id": "txn-003",
+          "title": "Borrower entity structure",
+          "description": "Company, trust, or SMSF borrowing implications",
+          "documentTypes": ["legal_compliance"],
+          "priority": "high"
+        }
+      ]
+    },
+    {
+      "id": "capex",
+      "name": "Building condition",
+      "description": "Deferred maintenance and near-term capital expenditure",
+      "items": [
+        {
+          "id": "cap-001",
+          "title": "Building condition report",
+          "description": "Physical condition of structure, roof, and façade",
+          "documentTypes": ["property_valuation", "environmental"],
+          "priority": "high"
+        },
+        {
+          "id": "cap-002",
+          "title": "Plant & equipment (HVAC, lifts)",
+          "description": "Age and replacement cycle of major building services",
+          "documentTypes": ["property_valuation", "environmental"],
+          "priority": "high"
+        },
+        {
+          "id": "cap-003",
+          "title": "Deferred maintenance allowance",
+          "description": "Near-term capex affecting net income or valuation",
+          "documentTypes": ["property_valuation", "financial_statement"],
+          "priority": "medium"
+        }
+      ]
+    }
+  ]
+}

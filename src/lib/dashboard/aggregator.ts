@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db";
 import { getRequiredDocumentTypes } from "@/lib/regulations/engine";
+import { calculateLenderReadiness } from "@/lib/lending/readiness";
 import { calculateRiskScore } from "@/lib/risk/scoring";
 import type { DashboardData, DocumentType, WorkflowStage } from "@/types";
 import { getWorkflowStages } from "@/lib/workflow/pipeline";
@@ -119,6 +120,12 @@ export async function getDashboardData(projectId: string): Promise<DashboardData
       stages: workflowStages,
     },
     risk,
+    lenderReadiness: calculateLenderReadiness({
+      purchasePrice: project.purchasePrice,
+      propertyType: project.propertyType,
+      state: project.state,
+      uploadedDocTypes: docTypes,
+    }),
     recentActivity: project.auditLogs.map((log) => ({
       id: log.id,
       action: log.action,

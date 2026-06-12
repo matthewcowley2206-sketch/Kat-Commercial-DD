@@ -49,6 +49,60 @@ export function getRiskBadgeClass(level: string): string {
   return `badge risk-${level}`;
 }
 
+export function getBankabilityColor(level: string): string {
+  switch (level) {
+    case "strong":
+      return "text-green-700";
+    case "adequate":
+      return "text-brand-700";
+    case "marginal":
+      return "text-amber-700";
+    case "weak":
+      return "text-red-700";
+    default:
+      return "text-slate-500";
+  }
+}
+
+export function getBankabilityBadgeClass(level: string): string {
+  switch (level) {
+    case "strong":
+      return "badge bg-green-100 text-green-900";
+    case "adequate":
+      return "badge bg-brand-100 text-brand-900";
+    case "marginal":
+      return "badge bg-amber-100 text-amber-900";
+    case "weak":
+      return "badge bg-red-100 text-red-900";
+    default:
+      return "badge bg-slate-100 text-slate-600";
+  }
+}
+
+export function getReadinessStatusColor(status: string): string {
+  switch (status) {
+    case "complete":
+      return "text-green-600";
+    case "in_progress":
+      return "text-brand-600";
+    default:
+      return "text-slate-400";
+  }
+}
+
+export function getSignalStatusClass(status: string): string {
+  switch (status) {
+    case "good":
+      return "bg-green-50 text-green-800 border-green-100";
+    case "caution":
+      return "bg-amber-50 text-amber-800 border-amber-100";
+    case "concern":
+      return "bg-red-50 text-red-800 border-red-100";
+    default:
+      return "bg-slate-50 text-slate-600 border-slate-100";
+  }
+}
+
 export function getStatusBadgeClass(status: string): string {
   switch (status) {
     case "compliant":

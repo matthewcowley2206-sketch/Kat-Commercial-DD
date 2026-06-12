@@ -1,3 +1,7 @@
+import type { LenderReadiness } from "@/types/lending";
+
+export type { LenderReadiness } from "@/types/lending";
+
 export type DocumentType =
   | "financial_statement"
   | "lease_agreement"
@@ -103,6 +107,7 @@ export interface DashboardData {
     stages: { stage: WorkflowStage; status: WorkflowStatus; completedAt: string | null }[];
   };
   risk: RiskResult | null;
+  lenderReadiness: LenderReadiness;
   recentActivity: {
     id: string;
     action: string;

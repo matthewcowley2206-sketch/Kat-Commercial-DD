@@ -22,6 +22,7 @@ import { RiskBreakdown } from "@/components/RiskBreakdown";
 import { WorkflowProgress } from "@/components/WorkflowProgress";
 import { ChecklistTable } from "@/components/ChecklistTable";
 import { DocumentUpload } from "@/components/DocumentUpload";
+import { LenderReadinessPanel } from "@/components/LenderReadinessPanel";
 import { copy } from "@/lib/copy";
 import { getJourneyContext, type JourneyStep } from "@/lib/journey";
 import {
@@ -137,7 +138,7 @@ export function ProjectDashboard({
     document.getElementById(`tab-${tabs[next]}`)?.focus();
   };
 
-  const { project, checklist: summary, documents, workflow, risk } = data;
+  const { project, checklist: summary, documents, workflow, risk, lenderReadiness } = data;
   const tabs: Tab[] = ["overview", "checklist", "audit"];
 
   return (
@@ -228,6 +229,8 @@ export function ProjectDashboard({
         hidden={activeTab !== "overview"}
         className={activeTab !== "overview" ? "hidden" : undefined}
       >
+        <LenderReadinessPanel readiness={lenderReadiness} />
+
         <div className="grid gap-4 sm:gap-6 lg:grid-cols-3">
           <section className="card" aria-labelledby="risk-heading">
             <h2 id="risk-heading" className="mb-4 text-sm font-semibold text-slate-900">
