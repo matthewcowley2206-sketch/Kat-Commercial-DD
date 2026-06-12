@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { prisma } from "@/lib/db";
+import { prisma, getDatabaseStatus } from "@/lib/db";
 import { createAuditLog } from "@/lib/audit/logger";
 
 const createProjectSchema = z.object({
-  name: z.string().min(1).max(200),
-  propertyAddress: z.string().min(1).max(500),
+  name: z.string().min(1, "Project name is required").max(200),
+  propertyAddress: z.string().min(1, "Property address is required").max(500),
   propertyType: z.enum([
     "office",
     "retail",
@@ -16,26 +16,40 @@ const createProjectSchema = z.object({
     "other",
   ]),
   state: z.enum(["NSW", "VIC", "QLD", "WA", "SA", "TAS", "ACT", "NT"]),
-  purchasePrice: z.number().positive().optional(),
+  purchasePrice: z
+    .preprocess(
+      (val) => {
+        if (val === "" || val === null || val === undefined) return undefined;
+        const num = typeof val === "string" ? parseFloat(val) : Number(val);
+        return Number.isFinite(num) ? num : undefined;
+      },
+      z.number().positive().optional()
+    ),
 });
 
 function databaseErrorMessage(error: unknown): string {
+  const status = getDatabaseStatus();
   const msg = error instanceof Error ? error.message : String(error);
 
-  if (!process.env.DATABASE_URL) {
-    return "Database not configured. Please add DATABASE_URL in your environment settings.";
+  if (!status.configured) {
+    return "Database not connected. In Vercel, add Postgres under Storage, then redeploy.";
   }
   if (msg.includes("Can't reach database") || msg.includes("ECONNREFUSED")) {
-    return "Cannot reach the database. Check your DATABASE_URL connection string.";
+    return "Cannot reach the database. Check your connection string in Vercel settings.";
   }
-  if (msg.includes("does not exist") || msg.includes("P2021")) {
-    return "Database tables not set up. Redeploy the app after connecting a Postgres database.";
+  if (msg.includes("does not exist") || msg.includes("P2021") || msg.includes("P1001")) {
+    return "Database tables missing. Redeploy after connecting Postgres so tables can be created.";
   }
-  if (msg.includes("file:") && msg.includes("postgresql")) {
-    return "Database configuration mismatch. Use Postgres on Vercel or SQLite locally.";
+  if (msg.includes("Authentication failed") || msg.includes("password")) {
+    return "Database authentication failed. Check your DATABASE_URL credentials.";
   }
 
-  return "Database error. Please check your connection settings and try again.";
+  return `Database error: ${msg}`;
+}
+
+function formatZodError(error: z.ZodError): string {
+  const first = error.errors[0];
+  return first?.message ?? "Please check your form inputs.";
 }
 
 export async function GET() {
@@ -84,18 +98,22 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    await createAuditLog({
-      projectId: project.id,
-      action: "project_created",
-      actor: "user",
-      details: { name: data.name, state: data.state },
-      ipAddress: request.headers.get("x-forwarded-for") ?? undefined,
-    });
+    try {
+      await createAuditLog({
+        projectId: project.id,
+        action: "project_created",
+        actor: "user",
+        details: { name: data.name, state: data.state },
+        ipAddress: request.headers.get("x-forwarded-for") ?? undefined,
+      });
+    } catch (auditError) {
+      console.error("Audit log failed (project still created):", auditError);
+    }
 
     return NextResponse.json(project, { status: 201 });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: error.errors }, { status: 400 });
+      return NextResponse.json({ error: formatZodError(error) }, { status: 400 });
     }
     console.error("POST /api/projects error:", error);
     return NextResponse.json(

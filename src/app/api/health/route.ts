@@ -1,15 +1,16 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/db";
+import { prisma, getDatabaseStatus } from "@/lib/db";
 
 export async function GET() {
-  const hasDatabaseUrl = Boolean(process.env.DATABASE_URL);
+  const status = getDatabaseStatus();
 
-  if (!hasDatabaseUrl) {
+  if (!status.configured) {
     return NextResponse.json(
       {
         ok: false,
         database: "missing",
-        message: "DATABASE_URL is not configured. Add a Postgres database in Vercel Storage.",
+        message:
+          "No database connected. In Vercel, go to Storage → Create Database → Postgres, then redeploy.",
       },
       { status: 503 }
     );
@@ -20,6 +21,7 @@ export async function GET() {
     return NextResponse.json({
       ok: true,
       database: "connected",
+      source: status.source,
       message: "Database is ready.",
     });
   } catch (error) {
@@ -28,6 +30,7 @@ export async function GET() {
       {
         ok: false,
         database: "error",
+        source: status.source,
         message,
       },
       { status: 503 }

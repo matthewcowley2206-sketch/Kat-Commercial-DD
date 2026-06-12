@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
+import { AddressAutocomplete } from "@/components/AddressAutocomplete";
 import { useToast } from "@/components/ui/Toast";
 import { copy } from "@/lib/copy";
 
@@ -56,27 +57,39 @@ export function CreateProjectModal({
     setLoading(true);
 
     try {
+      const payload = {
+        name: form.name.trim(),
+        propertyAddress: form.propertyAddress.trim(),
+        propertyType: form.propertyType,
+        state: form.state,
+        purchasePrice: form.purchasePrice.trim()
+          ? parseFloat(form.purchasePrice)
+          : undefined,
+      };
+
       const res = await fetch("/api/projects", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...form,
-          purchasePrice: form.purchasePrice
-            ? parseFloat(form.purchasePrice)
-            : undefined,
-        }),
+        body: JSON.stringify(payload),
       });
 
-      const project = await res.json();
-      if (!res.ok) {
-        const message =
-          typeof project.error === "string"
-            ? project.error
-            : copy.create.error;
-        throw new Error(message);
+      let data: { error?: string; id?: string } = {};
+      try {
+        data = await res.json();
+      } catch {
+        throw new Error("Server returned an invalid response. Please try again.");
       }
+
+      if (!res.ok) {
+        throw new Error(data.error ?? copy.create.error);
+      }
+
+      if (!data.id) {
+        throw new Error("Project was created but no ID was returned.");
+      }
+
       toast(copy.create.success, "success");
-      onCreated(project.id);
+      onCreated(data.id);
       onClose();
     } catch (error) {
       toast(
@@ -147,24 +160,23 @@ export function CreateProjectModal({
             </p>
           </div>
 
-          <div>
-            <label htmlFor="project-address" className="mb-1.5 block text-sm font-medium text-slate-800">
-              {copy.create.fields.address.label}
-            </label>
-            <input
-              id="project-address"
-              className="input"
-              required
-              autoComplete="street-address"
-              value={form.propertyAddress}
-              onChange={(e) => setForm({ ...form, propertyAddress: e.target.value })}
-              placeholder={copy.create.fields.address.placeholder}
-              aria-describedby="project-address-hint"
-            />
-            <p id="project-address-hint" className="field-hint">
-              {copy.create.fields.address.hint}
-            </p>
-          </div>
+          <AddressAutocomplete
+            id="project-address"
+            value={form.propertyAddress}
+            onChange={(propertyAddress) => setForm({ ...form, propertyAddress })}
+            onSelect={(suggestion) => {
+              setForm((prev) => ({
+                ...prev,
+                propertyAddress: suggestion.fullAddress,
+                state: STATES.includes(suggestion.state as (typeof STATES)[number])
+                  ? suggestion.state
+                  : prev.state,
+              }));
+            }}
+            placeholder={copy.create.fields.address.placeholder}
+            hint={copy.create.fields.address.hint}
+            required
+          />
 
           <div className="grid gap-5 sm:grid-cols-2">
             <div>

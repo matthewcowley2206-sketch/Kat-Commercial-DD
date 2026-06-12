@@ -28,7 +28,7 @@ export const copy = {
     subtitle: "Step 1 of 5 — a few details to get started",
     fields: {
       name: { label: "Project name", hint: "Something you'll recognise later", placeholder: "200 Collins Street acquisition" },
-      address: { label: "Property address", hint: "Full street address including state", placeholder: "200 Collins Street, Melbourne VIC 3000" },
+      address: { label: "Property address", hint: "Start typing — select from Australian address suggestions", placeholder: "200 Collins Street, Melbourne VIC 3000" },
       type: { label: "Property type", hint: "Helps tailor compliance checks" },
       state: { label: "State or territory", hint: "Regulations vary by jurisdiction" },
       price: { label: "Purchase price", hint: "Optional — used for risk assessment", placeholder: "e.g. 45000000" },
