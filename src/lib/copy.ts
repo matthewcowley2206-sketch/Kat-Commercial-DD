@@ -239,6 +239,59 @@ export const copy = {
       },
       empty: "Upload financials and a valuation to calculate lending metrics.",
     },
+    compliance: {
+      summary: {
+        pending:
+          "Checklist generated. Upload remaining documents and verify each item before lender submission.",
+        inReview:
+          "Good progress. Documents are mapped to requirements — work through in-review items to strengthen your lender pack.",
+        strong:
+          "Strong compliance position. Most requirements verified and ready for lender review.",
+        complete: "All regulatory checks verified. Compliance pack is lender-ready.",
+        issues:
+          "Compliance concerns flagged. Resolve non-compliant items before submitting to lenders.",
+        notStarted:
+          "Run analysis to build your regulatory checklist across five Australian frameworks.",
+      },
+      badges: {
+        notStarted: "Not started",
+        inProgress: "In progress",
+        onTrack: "On track",
+        complete: "Complete",
+        needsAttention: "Needs attention",
+      },
+      drivers: {
+        compliant: (n: number, total: number) => `${n} of ${total} checks verified`,
+        inReview: (n: number) => `${n} check${n === 1 ? "" : "s"} awaiting verification`,
+        issues: (n: number) => `${n} non-compliant item${n === 1 ? "" : "s"} flagged`,
+        categoryRemaining: (name: string, n: number) =>
+          `${name}: ${n} item${n === 1 ? "" : "s"} outstanding`,
+      },
+    },
+    documents: {
+      summary: {
+        empty:
+          "Upload financials, leases, valuations, environmental reports, and legal documents to begin due diligence.",
+        starting:
+          "Getting started. Add the core document types to unlock analysis and compliance checks.",
+        partial:
+          "Partial pack on file. Upload remaining document types to complete your lender submission pack.",
+        complete:
+          "Full document pack uploaded. All five core types on file for lender and compliance review.",
+      },
+      badges: {
+        notStarted: "Not started",
+        starting: "Getting started",
+        partial: "Partial pack",
+        complete: "Complete pack",
+      },
+      drivers: {
+        onFile: (label: string, count: number) =>
+          `${label} on file${count > 1 ? ` (${count} files)` : ""}`,
+        missing: (label: string) => `Still needed: ${label}`,
+        required: (label: string) => `Required: ${label}`,
+      },
+    },
     risk: {
       summary: {
         pending: "Run analysis after uploading documents to generate your risk score and summary.",

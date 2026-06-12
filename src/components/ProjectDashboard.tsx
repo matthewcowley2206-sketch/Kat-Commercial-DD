@@ -7,9 +7,13 @@ import {
   FileText,
   Activity,
   ArrowLeft,
-  ArrowRight,
   RefreshCw,
+  Gauge,
 } from "lucide-react";
+import { CompletionRing } from "@/components/CompletionRing";
+import { OverviewMetricCard } from "@/components/OverviewMetricCard";
+import { getComplianceSummary } from "@/lib/compliance/summary";
+import { getDocumentsSummary } from "@/lib/documents/summary";
 import { ComplianceDetailModal } from "@/components/ComplianceDetailModal";
 import { DocumentsDetailModal } from "@/components/DocumentsDetailModal";
 import { useRealtime } from "@/hooks/useRealtime";
@@ -141,6 +145,8 @@ export function ProjectDashboard({
 
   const { project, checklist: summary, documents, workflow, risk, lenderReadiness } = data;
   const riskSummary = getRiskSummary(project.riskScore, project.riskLevel, risk, summary);
+  const complianceSummary = getComplianceSummary(summary);
+  const documentsSummary = getDocumentsSummary(documents);
   const tabs: Tab[] = ["overview", "checklist", "audit"];
 
   return (
@@ -234,86 +240,66 @@ export function ProjectDashboard({
         <LenderReadinessPanel readiness={lenderReadiness} />
 
         <div className="grid gap-4 sm:gap-6 lg:grid-cols-3">
-          <section className="card" aria-labelledby="risk-heading">
-            <h2 id="risk-heading" className="mb-4 text-sm font-semibold text-slate-900">
-              {copy.dashboard.sections.risk}
-            </h2>
-            <RiskGauge
-              score={project.riskScore}
-              level={project.riskLevel}
-              summary={riskSummary.summary}
-              drivers={riskSummary.drivers}
-            />
-          </section>
+          <OverviewMetricCard
+            title={copy.dashboard.sections.risk}
+            icon={Gauge}
+            summary={riskSummary.summary}
+            drivers={riskSummary.drivers}
+          >
+            <RiskGauge score={project.riskScore} level={project.riskLevel} />
+          </OverviewMetricCard>
 
-          <button
-            type="button"
-            className="card group w-full text-left transition-all duration-200 hover:border-brand-200 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
-            aria-labelledby="compliance-heading"
-            aria-label={`${copy.dashboard.sections.compliance}. ${summary.total} total, ${summary.compliant} compliant. ${copy.dashboard.detail.tapToExplore}`}
+          <OverviewMetricCard
+            title={copy.dashboard.sections.compliance}
+            icon={Shield}
+            badge={<span className={complianceSummary.badge.className}>{complianceSummary.badge.label}</span>}
+            summary={complianceSummary.summary}
+            drivers={complianceSummary.drivers}
             onClick={() => setShowComplianceDetail(true)}
+            ariaLabel={`${copy.dashboard.sections.compliance}. ${complianceSummary.badge.label}. ${copy.dashboard.detail.tapToExplore}`}
           >
-            <div className="mb-4 flex items-center justify-between gap-2">
-              <h2 id="compliance-heading" className="flex items-center gap-2 text-sm font-semibold text-slate-900">
-                <Shield className="h-4 w-4 text-slate-400" aria-hidden />
-                {copy.dashboard.sections.compliance}
-              </h2>
-              <ArrowRight
-                className="h-4 w-4 shrink-0 text-slate-300 transition-colors group-hover:text-brand-600"
-                aria-hidden
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="stat-tile bg-slate-50">
-                <p className="text-2xl font-bold tabular-nums text-slate-900">{summary.total}</p>
-                <p className="text-xs text-slate-500">Total</p>
+            <CompletionRing
+              value={complianceSummary.completionPercent}
+              displayValue={`${complianceSummary.completionPercent}%`}
+              subLabel="verified"
+              strokeColor={complianceSummary.ringColor}
+            />
+            {summary.total > 0 && (
+              <div className="mt-4 grid w-full grid-cols-4 gap-1.5">
+                {[
+                  { value: summary.total, label: "Total", className: "bg-slate-50 text-slate-700" },
+                  { value: summary.compliant, label: "Done", className: "bg-green-50 text-green-800" },
+                  { value: summary.inReview, label: "Review", className: "bg-blue-50 text-blue-800" },
+                  { value: summary.nonCompliant, label: "Issues", className: "bg-red-50 text-red-800" },
+                ].map((stat) => (
+                  <div
+                    key={stat.label}
+                    className={`rounded-xl px-2 py-2 text-center ${stat.className}`}
+                  >
+                    <p className="text-sm font-bold tabular-nums">{stat.value}</p>
+                    <p className="text-[10px] font-medium opacity-80">{stat.label}</p>
+                  </div>
+                ))}
               </div>
-              <div className="stat-tile bg-green-50">
-                <p className="text-2xl font-bold tabular-nums text-green-800">{summary.compliant}</p>
-                <p className="text-xs text-green-700">Compliant</p>
-              </div>
-              <div className="stat-tile bg-amber-50">
-                <p className="text-2xl font-bold tabular-nums text-amber-800">{summary.pending}</p>
-                <p className="text-xs text-amber-700">Pending</p>
-              </div>
-              <div className="stat-tile bg-red-50">
-                <p className="text-2xl font-bold tabular-nums text-red-800">{summary.nonCompliant}</p>
-                <p className="text-xs text-red-700">Issues</p>
-              </div>
-            </div>
-            <p className="mt-3 text-xs font-medium text-brand-600 opacity-100 sm:opacity-0 sm:transition-opacity sm:group-hover:opacity-100 sm:group-focus-visible:opacity-100">
-              {copy.dashboard.detail.learnMore}
-            </p>
-          </button>
-
-          <button
-            type="button"
-            className="card group w-full text-left transition-all duration-200 hover:border-brand-200 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
-            aria-labelledby="docs-heading"
-            aria-label={`${copy.dashboard.sections.documents}. ${documents.total} files uploaded. ${copy.dashboard.detail.tapToExplore}`}
-            onClick={() => setShowDocumentsDetail(true)}
-          >
-            <div className="mb-4 flex items-center justify-between gap-2">
-              <h2 id="docs-heading" className="flex items-center gap-2 text-sm font-semibold text-slate-900">
-                <FileText className="h-4 w-4 text-slate-400" aria-hidden />
-                {copy.dashboard.sections.documents}
-              </h2>
-              <ArrowRight
-                className="h-4 w-4 shrink-0 text-slate-300 transition-colors group-hover:text-brand-600"
-                aria-hidden
-              />
-            </div>
-            <p className="text-3xl font-bold tabular-nums text-slate-900">{documents.total}</p>
-            <p className="text-sm text-slate-500">files uploaded</p>
-            {documents.missing.length > 0 && (
-              <p className="mt-2 text-sm text-amber-700">
-                {documents.missing.length} still needed
-              </p>
             )}
-            <p className="mt-3 text-xs font-medium text-brand-600 opacity-100 sm:opacity-0 sm:transition-opacity sm:group-hover:opacity-100 sm:group-focus-visible:opacity-100">
-              {copy.dashboard.detail.learnMore}
-            </p>
-          </button>
+          </OverviewMetricCard>
+
+          <OverviewMetricCard
+            title={copy.dashboard.sections.documents}
+            icon={FileText}
+            badge={<span className={documentsSummary.badge.className}>{documentsSummary.badge.label}</span>}
+            summary={documentsSummary.summary}
+            drivers={documentsSummary.drivers}
+            onClick={() => setShowDocumentsDetail(true)}
+            ariaLabel={`${copy.dashboard.sections.documents}. ${documentsSummary.badge.label}. ${copy.dashboard.detail.tapToExplore}`}
+          >
+            <CompletionRing
+              value={documentsSummary.completionPercent}
+              displayValue={String(documents.total)}
+              subLabel="files uploaded"
+              strokeColor={documentsSummary.ringColor}
+            />
+          </OverviewMetricCard>
 
           <section className="card lg:col-span-2" aria-labelledby="risk-breakdown-heading">
             <h2 id="risk-breakdown-heading" className="mb-4 text-sm font-semibold text-slate-900">
