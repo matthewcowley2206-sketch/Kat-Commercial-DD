@@ -7,8 +7,11 @@ import {
   FileText,
   Activity,
   ArrowLeft,
+  ArrowRight,
   RefreshCw,
 } from "lucide-react";
+import { ComplianceDetailModal } from "@/components/ComplianceDetailModal";
+import { DocumentsDetailModal } from "@/components/DocumentsDetailModal";
 import { useRealtime } from "@/hooks/useRealtime";
 import { useToast } from "@/components/ui/Toast";
 import { LiveRegion } from "@/components/ui/LiveRegion";
@@ -55,6 +58,8 @@ export function ProjectDashboard({
   const [running, setRunning] = useState(false);
   const [activeTab, setActiveTab] = useState<Tab>("overview");
   const [liveMessage, setLiveMessage] = useState("");
+  const [showComplianceDetail, setShowComplianceDetail] = useState(false);
+  const [showDocumentsDetail, setShowDocumentsDetail] = useState(false);
 
   const journey = getJourneyContext(data);
 
@@ -231,11 +236,23 @@ export function ProjectDashboard({
             <RiskGauge score={project.riskScore} level={project.riskLevel} />
           </section>
 
-          <section className="card" aria-labelledby="compliance-heading">
-            <h2 id="compliance-heading" className="mb-4 flex items-center gap-2 text-sm font-semibold text-slate-900">
-              <Shield className="h-4 w-4 text-slate-400" aria-hidden />
-              {copy.dashboard.sections.compliance}
-            </h2>
+          <button
+            type="button"
+            className="card group w-full text-left transition-all duration-200 hover:border-brand-200 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+            aria-labelledby="compliance-heading"
+            aria-label={`${copy.dashboard.sections.compliance}. ${summary.total} total, ${summary.compliant} compliant. ${copy.dashboard.detail.tapToExplore}`}
+            onClick={() => setShowComplianceDetail(true)}
+          >
+            <div className="mb-4 flex items-center justify-between gap-2">
+              <h2 id="compliance-heading" className="flex items-center gap-2 text-sm font-semibold text-slate-900">
+                <Shield className="h-4 w-4 text-slate-400" aria-hidden />
+                {copy.dashboard.sections.compliance}
+              </h2>
+              <ArrowRight
+                className="h-4 w-4 shrink-0 text-slate-300 transition-colors group-hover:text-brand-600"
+                aria-hidden
+              />
+            </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="stat-tile bg-slate-50">
                 <p className="text-2xl font-bold tabular-nums text-slate-900">{summary.total}</p>
@@ -254,13 +271,28 @@ export function ProjectDashboard({
                 <p className="text-xs text-red-700">Issues</p>
               </div>
             </div>
-          </section>
+            <p className="mt-3 text-xs font-medium text-brand-600 opacity-100 sm:opacity-0 sm:transition-opacity sm:group-hover:opacity-100 sm:group-focus-visible:opacity-100">
+              {copy.dashboard.detail.learnMore}
+            </p>
+          </button>
 
-          <section className="card" aria-labelledby="docs-heading">
-            <h2 id="docs-heading" className="mb-4 flex items-center gap-2 text-sm font-semibold text-slate-900">
-              <FileText className="h-4 w-4 text-slate-400" aria-hidden />
-              {copy.dashboard.sections.documents}
-            </h2>
+          <button
+            type="button"
+            className="card group w-full text-left transition-all duration-200 hover:border-brand-200 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+            aria-labelledby="docs-heading"
+            aria-label={`${copy.dashboard.sections.documents}. ${documents.total} files uploaded. ${copy.dashboard.detail.tapToExplore}`}
+            onClick={() => setShowDocumentsDetail(true)}
+          >
+            <div className="mb-4 flex items-center justify-between gap-2">
+              <h2 id="docs-heading" className="flex items-center gap-2 text-sm font-semibold text-slate-900">
+                <FileText className="h-4 w-4 text-slate-400" aria-hidden />
+                {copy.dashboard.sections.documents}
+              </h2>
+              <ArrowRight
+                className="h-4 w-4 shrink-0 text-slate-300 transition-colors group-hover:text-brand-600"
+                aria-hidden
+              />
+            </div>
             <p className="text-3xl font-bold tabular-nums text-slate-900">{documents.total}</p>
             <p className="text-sm text-slate-500">files uploaded</p>
             {documents.missing.length > 0 && (
@@ -268,7 +300,10 @@ export function ProjectDashboard({
                 {documents.missing.length} still needed
               </p>
             )}
-          </section>
+            <p className="mt-3 text-xs font-medium text-brand-600 opacity-100 sm:opacity-0 sm:transition-opacity sm:group-hover:opacity-100 sm:group-focus-visible:opacity-100">
+              {copy.dashboard.detail.learnMore}
+            </p>
+          </button>
 
           <section className="card lg:col-span-2" aria-labelledby="risk-breakdown-heading">
             <h2 id="risk-breakdown-heading" className="mb-4 text-sm font-semibold text-slate-900">
@@ -382,6 +417,28 @@ export function ProjectDashboard({
       >
         <AuditTrail projectId={project.id} />
       </div>
+
+      {showComplianceDetail && (
+        <ComplianceDetailModal
+          summary={summary}
+          checklistItems={checklist}
+          onClose={() => setShowComplianceDetail(false)}
+          onViewChecklist={() => setActiveTab("checklist")}
+        />
+      )}
+
+      {showDocumentsDetail && (
+        <DocumentsDetailModal
+          documents={documents}
+          onClose={() => setShowDocumentsDetail(false)}
+          onAddDocuments={() => {
+            setActiveTab("overview");
+            setTimeout(() => {
+              uploadRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+            }, 100);
+          }}
+        />
+      )}
     </div>
   );
 }

@@ -223,6 +223,42 @@ export const copy = {
       risk_scoring: "Calculating risk",
       reporting: "Preparing report",
     },
+    detail: {
+      learnMore: "View details",
+      tapToExplore: "Tap for breakdown",
+      compliance: {
+        title: "Compliance breakdown",
+        intro:
+          "A snapshot of your regulatory checklist. Items move from pending to in review as documents are uploaded, then to compliant once you verify them.",
+        total: "Total checks",
+        compliant: "Compliant",
+        pending: "Pending",
+        inReview: "In review",
+        issues: "Issues",
+        byCategory: "By framework",
+        needsAttention: "Needs attention",
+        noIssues: "No outstanding issues — great work.",
+        empty: "Run analysis to generate your compliance checklist.",
+        viewChecklist: "View full checklist",
+        statusHelp: {
+          compliant: "Verified and meeting requirements.",
+          in_review: "Documents are on file — awaiting your verification.",
+          pending: "Waiting on documents or review.",
+          non_compliant: "Flagged as not meeting requirements.",
+        },
+      },
+      documents: {
+        title: "Document summary",
+        intro:
+          "Kat uses five core document types to run your regulatory checks. Upload what's available — we'll flag anything still missing.",
+        onFile: "On file",
+        stillNeeded: "Still needed",
+        noFiles: "No documents uploaded yet.",
+        uploadedAt: "Uploaded",
+        viewUpload: "Add documents",
+        fileCount: (n: number) => `${n} file${n === 1 ? "" : "s"}`,
+      },
+    },
   },
   upload: {
     title: "Add a document",

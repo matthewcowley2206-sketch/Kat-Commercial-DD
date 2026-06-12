@@ -103,6 +103,15 @@ export async function getDashboardData(projectId: string): Promise<DashboardData
         status: "uploaded",
       })),
       missing,
+      files: project.documents.map((d) => ({
+        id: d.id,
+        type: d.type as DocumentType,
+        fileName: d.fileName,
+        fileSize: d.fileSize,
+        mimeType: d.mimeType,
+        status: d.status,
+        uploadedAt: d.uploadedAt.toISOString(),
+      })),
     },
     workflow: {
       currentStage: (currentRun?.stage as WorkflowStage) ?? null,

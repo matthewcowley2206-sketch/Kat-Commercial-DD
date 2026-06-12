@@ -87,6 +87,15 @@ export interface DashboardData {
     total: number;
     byType: { type: DocumentType; count: number; status: string }[];
     missing: DocumentType[];
+    files: {
+      id: string;
+      type: DocumentType;
+      fileName: string;
+      fileSize: number;
+      mimeType: string;
+      status: string;
+      uploadedAt: string;
+    }[];
   };
   workflow: {
     currentStage: WorkflowStage | null;
