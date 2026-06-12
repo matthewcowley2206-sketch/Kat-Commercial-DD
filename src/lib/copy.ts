@@ -1,7 +1,7 @@
 export const copy = {
   app: {
     name: "Kat Commercial DD",
-    tagline: "From property DD to lender-ready",
+    tagline: "From property due diligence to lender-ready",
     badge: "Audit-ready",
   },
   home: {
@@ -213,7 +213,7 @@ export const copy = {
     },
     lenderReadiness: {
       title: "Lender readiness",
-      subtitle: "From property DD to bankability — what lenders will scrutinise",
+      subtitle: "From property due diligence to bankability — what lenders will scrutinise",
       bankability: "Bankability score",
       progress: (complete: number, total: number) =>
         `${complete} of ${total} areas complete`,
