@@ -67,13 +67,22 @@ export function CreateProjectModal({
         }),
       });
 
-      if (!res.ok) throw new Error("Failed to create project");
       const project = await res.json();
+      if (!res.ok) {
+        const message =
+          typeof project.error === "string"
+            ? project.error
+            : copy.create.error;
+        throw new Error(message);
+      }
       toast(copy.create.success, "success");
       onCreated(project.id);
       onClose();
-    } catch {
-      toast(copy.create.error, "error");
+    } catch (error) {
+      toast(
+        error instanceof Error ? error.message : copy.create.error,
+        "error"
+      );
     } finally {
       setLoading(false);
     }

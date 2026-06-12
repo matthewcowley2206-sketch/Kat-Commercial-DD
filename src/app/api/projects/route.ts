@@ -19,26 +19,53 @@ const createProjectSchema = z.object({
   purchasePrice: z.number().positive().optional(),
 });
 
-export async function GET() {
-  const projects = await prisma.project.findMany({
-    orderBy: { updatedAt: "desc" },
-    select: {
-      id: true,
-      name: true,
-      propertyAddress: true,
-      propertyType: true,
-      state: true,
-      status: true,
-      riskScore: true,
-      riskLevel: true,
-      purchasePrice: true,
-      createdAt: true,
-      updatedAt: true,
-      _count: { select: { documents: true, checklistItems: true } },
-    },
-  });
+function databaseErrorMessage(error: unknown): string {
+  const msg = error instanceof Error ? error.message : String(error);
 
-  return NextResponse.json(projects);
+  if (!process.env.DATABASE_URL) {
+    return "Database not configured. Please add DATABASE_URL in your environment settings.";
+  }
+  if (msg.includes("Can't reach database") || msg.includes("ECONNREFUSED")) {
+    return "Cannot reach the database. Check your DATABASE_URL connection string.";
+  }
+  if (msg.includes("does not exist") || msg.includes("P2021")) {
+    return "Database tables not set up. Redeploy the app after connecting a Postgres database.";
+  }
+  if (msg.includes("file:") && msg.includes("postgresql")) {
+    return "Database configuration mismatch. Use Postgres on Vercel or SQLite locally.";
+  }
+
+  return "Database error. Please check your connection settings and try again.";
+}
+
+export async function GET() {
+  try {
+    const projects = await prisma.project.findMany({
+      orderBy: { updatedAt: "desc" },
+      select: {
+        id: true,
+        name: true,
+        propertyAddress: true,
+        propertyType: true,
+        state: true,
+        status: true,
+        riskScore: true,
+        riskLevel: true,
+        purchasePrice: true,
+        createdAt: true,
+        updatedAt: true,
+        _count: { select: { documents: true, checklistItems: true } },
+      },
+    });
+
+    return NextResponse.json(projects);
+  } catch (error) {
+    console.error("GET /api/projects error:", error);
+    return NextResponse.json(
+      { error: databaseErrorMessage(error) },
+      { status: 503 }
+    );
+  }
 }
 
 export async function POST(request: NextRequest) {
@@ -70,6 +97,10 @@ export async function POST(request: NextRequest) {
     if (error instanceof z.ZodError) {
       return NextResponse.json({ error: error.errors }, { status: 400 });
     }
-    return NextResponse.json({ error: "Failed to create project" }, { status: 500 });
+    console.error("POST /api/projects error:", error);
+    return NextResponse.json(
+      { error: databaseErrorMessage(error) },
+      { status: 503 }
+    );
   }
 }
