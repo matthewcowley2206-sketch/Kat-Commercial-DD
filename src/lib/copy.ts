@@ -1,7 +1,7 @@
 export const copy = {
   app: {
     name: "Kat Commercial DD",
-    tagline: "Due diligence, simplified for Australia",
+    tagline: "Empowering Confident Commercial decisions",
     badge: "Audit-ready",
   },
   home: {
