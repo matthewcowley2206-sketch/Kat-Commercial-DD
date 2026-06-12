@@ -1,0 +1,113 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Project {
+  id              String           @id @default(cuid())
+  name            String
+  propertyAddress String
+  propertyType    String
+  state           String
+  purchasePrice   Float?
+  status          String           @default("draft")
+  riskScore       Float            @default(0)
+  riskLevel       String           @default("pending")
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  documents       Document[]
+  checklistItems  ChecklistItem[]
+  workflowRuns    WorkflowRun[]
+  riskAssessments RiskAssessment[]
+  auditLogs       AuditLog[]
+}
+
+model Document {
+  id           String   @id @default(cuid())
+  projectId    String
+  project      Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  type         String
+  fileName     String
+  filePath     String
+  fileHash     String
+  fileSize     Int
+  mimeType     String
+  status       String   @default("uploaded")
+  metadata     String?
+  uploadedAt   DateTime @default(now())
+  processedAt  DateTime?
+  auditLogs    AuditLog[]
+
+  @@index([projectId])
+  @@index([type])
+}
+
+model ChecklistItem {
+  id            String   @id @default(cuid())
+  projectId     String
+  project       Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  regulationId  String
+  category      String
+  title         String
+  description   String
+  status        String   @default("pending")
+  priority      String   @default("medium")
+  evidence      String?
+  notes         String?
+  dueDate       DateTime?
+  completedAt   DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([projectId])
+  @@index([regulationId])
+}
+
+model WorkflowRun {
+  id          String   @id @default(cuid())
+  projectId   String
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  stage       String
+  status      String   @default("pending")
+  startedAt   DateTime @default(now())
+  completedAt DateTime?
+  result      String?
+  error       String?
+
+  @@index([projectId])
+}
+
+model RiskAssessment {
+  id          String   @id @default(cuid())
+  projectId   String
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  category    String
+  score       Float
+  weight      Float
+  factors     String
+  assessedAt  DateTime @default(now())
+
+  @@index([projectId])
+}
+
+model AuditLog {
+  id         String    @id @default(cuid())
+  projectId  String?
+  project    Project?  @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  documentId String?
+  document   Document? @relation(fields: [documentId], references: [id], onDelete: SetNull)
+  action     String
+  actor      String    @default("system")
+  details    String
+  hash       String
+  prevHash   String?
+  ipAddress  String?
+  createdAt  DateTime  @default(now())
+
+  @@index([projectId])
+  @@index([createdAt])
+}

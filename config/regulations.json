@@ -1,0 +1,247 @@
+{
+  "version": "2024.1",
+  "lastUpdated": "2024-06-01",
+  "jurisdiction": "Australia",
+  "categories": [
+    {
+      "id": "ncc",
+      "name": "National Construction Code (NCC)",
+      "authority": "Australian Building Codes Board (ABCB)",
+      "description": "Building and construction compliance requirements for commercial properties",
+      "items": [
+        {
+          "id": "ncc-001",
+          "title": "Building Classification Verification",
+          "description": "Confirm property classification (Class 5-9) under NCC Volume One",
+          "priority": "critical",
+          "documentTypes": ["legal_compliance", "property_valuation"],
+          "weight": 1.5
+        },
+        {
+          "id": "ncc-002",
+          "title": "Fire Safety Compliance",
+          "description": "Verify compliance with NCC Part E1-E4 fire safety provisions including sprinklers, exits, and fire resistance",
+          "priority": "critical",
+          "documentTypes": ["legal_compliance", "environmental"],
+          "weight": 1.8
+        },
+        {
+          "id": "ncc-003",
+          "title": "Accessibility (DDA/NCC Part D3)",
+          "description": "Disability Discrimination Act and NCC accessibility requirements for public access areas",
+          "priority": "high",
+          "documentTypes": ["legal_compliance"],
+          "weight": 1.2
+        },
+        {
+          "id": "ncc-004",
+          "title": "Energy Efficiency (Section J)",
+          "description": "NCC Section J energy efficiency compliance for commercial buildings",
+          "priority": "high",
+          "documentTypes": ["environmental", "legal_compliance"],
+          "weight": 1.0
+        },
+        {
+          "id": "ncc-005",
+          "title": "Structural Adequacy",
+          "description": "Building structural integrity per NCC Part B1 and B2",
+          "priority": "critical",
+          "documentTypes": ["property_valuation", "environmental"],
+          "weight": 1.6
+        }
+      ]
+    },
+    {
+      "id": "apra",
+      "name": "APRA Prudential Standards",
+      "authority": "Australian Prudential Regulation Authority",
+      "description": "Lending and investment prudential requirements for commercial property finance",
+      "items": [
+        {
+          "id": "apra-001",
+          "title": "APS 220 Risk Management",
+          "description": "Risk management framework for property-backed lending per APS 220",
+          "priority": "critical",
+          "documentTypes": ["financial_statement"],
+          "weight": 1.5
+        },
+        {
+          "id": "apra-002",
+          "title": "APS 113 Capital Adequacy",
+          "description": "Capital adequacy assessment for property investment exposure",
+          "priority": "high",
+          "documentTypes": ["financial_statement", "property_valuation"],
+          "weight": 1.4
+        },
+        {
+          "id": "apra-003",
+          "title": "APS 117 Property Collateral Valuation",
+          "description": "Independent valuation requirements per APS 117 for commercial property collateral",
+          "priority": "critical",
+          "documentTypes": ["property_valuation"],
+          "weight": 1.8
+        },
+        {
+          "id": "apra-004",
+          "title": "Loan-to-Value Ratio Assessment",
+          "description": "LVR compliance for commercial property lending (typically max 65-70%)",
+          "priority": "high",
+          "documentTypes": ["financial_statement", "property_valuation"],
+          "weight": 1.3
+        },
+        {
+          "id": "apra-005",
+          "title": "Income Stress Testing",
+          "description": "Rental income stress testing per APRA commercial property lending guidelines",
+          "priority": "high",
+          "documentTypes": ["financial_statement", "lease_agreement"],
+          "weight": 1.4
+        }
+      ]
+    },
+    {
+      "id": "firb",
+      "name": "FIRB Foreign Investment",
+      "authority": "Foreign Investment Review Board",
+      "description": "Foreign Investment Review Board requirements for commercial property acquisitions",
+      "items": [
+        {
+          "id": "firb-001",
+          "title": "Foreign Ownership Assessment",
+          "description": "Determine if FIRB approval required for foreign persons acquiring commercial property",
+          "priority": "critical",
+          "documentTypes": ["legal_compliance"],
+          "weight": 2.0
+        },
+        {
+          "id": "firb-002",
+          "title": "Vacant Commercial Land Rules",
+          "description": "FIRB restrictions on foreign acquisition of vacant commercial land",
+          "priority": "high",
+          "documentTypes": ["legal_compliance", "property_valuation"],
+          "weight": 1.5
+        },
+        {
+          "id": "firb-003",
+          "title": "National Security Business Assessment",
+          "description": "Assessment against FIRB national security business rules for sensitive locations",
+          "priority": "critical",
+          "documentTypes": ["legal_compliance", "environmental"],
+          "weight": 1.8
+        },
+        {
+          "id": "firb-004",
+          "title": "Application Fee & Timeline",
+          "description": "FIRB application fees and statutory decision timeframes compliance",
+          "priority": "medium",
+          "documentTypes": ["legal_compliance"],
+          "weight": 0.8
+        },
+        {
+          "id": "firb-005",
+          "title": "Condition Compliance",
+          "description": "Review and track compliance with any FIRB approval conditions",
+          "priority": "high",
+          "documentTypes": ["legal_compliance"],
+          "weight": 1.3
+        }
+      ]
+    },
+    {
+      "id": "environmental",
+      "name": "Environmental & Planning",
+      "authority": "State EPA / Local Council",
+      "description": "Environmental and planning compliance for commercial properties",
+      "items": [
+        {
+          "id": "env-001",
+          "title": "Phase 1 Environmental Site Assessment",
+          "description": "Contamination assessment per ASC NEPM and state EPA guidelines",
+          "priority": "critical",
+          "documentTypes": ["environmental"],
+          "weight": 1.7
+        },
+        {
+          "id": "env-002",
+          "title": "Asbestos Register & Management Plan",
+          "description": "Asbestos identification and management per WHS Regulations",
+          "priority": "critical",
+          "documentTypes": ["environmental", "legal_compliance"],
+          "weight": 1.6
+        },
+        {
+          "id": "env-003",
+          "title": "Planning Permit & Zoning",
+          "description": "Verify planning permit status and zoning compliance with local council",
+          "priority": "high",
+          "documentTypes": ["legal_compliance", "property_valuation"],
+          "weight": 1.3
+        }
+      ]
+    },
+    {
+      "id": "lease",
+      "name": "Lease & Tenancy",
+      "authority": "State Retail/Commercial Leases Act",
+      "description": "Commercial lease due diligence requirements",
+      "items": [
+        {
+          "id": "lease-001",
+          "title": "Lease Expiry Profile & WALE",
+          "description": "Weighted average lease expiry analysis and vacancy risk assessment",
+          "priority": "high",
+          "documentTypes": ["lease_agreement", "financial_statement"],
+          "weight": 1.4
+        },
+        {
+          "id": "lease-002",
+          "title": "Rent Review Mechanisms",
+          "description": "CPI/fixed/market rent review clauses and upcoming review dates",
+          "priority": "medium",
+          "documentTypes": ["lease_agreement"],
+          "weight": 1.0
+        },
+        {
+          "id": "lease-003",
+          "title": "Make-Good & Dilapidation",
+          "description": "Tenant make-good obligations and dilapidation provisions",
+          "priority": "medium",
+          "documentTypes": ["lease_agreement"],
+          "weight": 0.9
+        }
+      ]
+    }
+  ],
+  "documentTypes": {
+    "financial_statement": {
+      "label": "Financial Statements",
+      "description": "P&L, balance sheet, rent roll, outgoings schedule",
+      "required": true,
+      "extensions": [".pdf", ".xlsx", ".xls", ".csv"]
+    },
+    "lease_agreement": {
+      "label": "Lease Agreements",
+      "description": "Head lease, sub-leases, tenancy schedules",
+      "required": true,
+      "extensions": [".pdf", ".docx", ".doc"]
+    },
+    "property_valuation": {
+      "label": "Property Valuation",
+      "description": "Independent valuation report (RICS/API compliant)",
+      "required": true,
+      "extensions": [".pdf"]
+    },
+    "environmental": {
+      "label": "Environmental Reports",
+      "description": "Phase 1/2 ESA, asbestos report, contamination assessment",
+      "required": true,
+      "extensions": [".pdf"]
+    },
+    "legal_compliance": {
+      "label": "Legal & Compliance",
+      "description": "Title search, planning certificates, compliance certificates, FIRB",
+      "required": true,
+      "extensions": [".pdf", ".docx"]
+    }
+  }
+}
