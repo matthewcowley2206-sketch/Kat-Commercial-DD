@@ -62,10 +62,13 @@ export const copy = {
           `${count} regulatory framework${count === 1 ? "" : "s"}`,
         intro:
           "Australian commercial property deals touch several areas of law and regulation. Kat organises these into five frameworks so nothing important is missed.",
+        visitWebsite: "Visit regulator website",
         items: {
           ncc: {
             name: "National Construction Code (NCC)",
             authority: "Australian Building Codes Board",
+            websiteUrl: "https://ncc.abcb.gov.au/",
+            websiteLabel: "Australian Building Codes Board",
             summary:
               "The building rulebook for commercial properties. Covers how the building is classified, fire safety, accessibility, energy efficiency, and structural integrity.",
             whyItMatters:
@@ -74,6 +77,8 @@ export const copy = {
           apra: {
             name: "APRA prudential standards",
             authority: "Australian Prudential Regulation Authority",
+            websiteUrl: "https://www.apra.gov.au/",
+            websiteLabel: "APRA",
             summary:
               "The lending safety rules banks follow when financing commercial property. Focuses on valuations, loan-to-value ratios, and whether rental income can withstand stress.",
             whyItMatters:
@@ -82,6 +87,8 @@ export const copy = {
           firb: {
             name: "FIRB foreign investment",
             authority: "Foreign Investment Review Board",
+            websiteUrl: "https://foreigninvestment.gov.au/",
+            websiteLabel: "FIRB",
             summary:
               "Checks whether foreign buyers need government approval before acquiring Australian commercial property, including vacant land and sensitive locations.",
             whyItMatters:
@@ -90,6 +97,8 @@ export const copy = {
           environmental: {
             name: "Environmental & planning",
             authority: "State EPA and local council",
+            websiteUrl: "https://www.dcceew.gov.au/environment",
+            websiteLabel: "Department of Climate Change, Energy, the Environment and Water",
             summary:
               "Covers contamination risk, asbestos management, and whether the property's use matches its planning permit and zoning.",
             whyItMatters:
@@ -98,6 +107,8 @@ export const copy = {
           lease: {
             name: "Lease & tenancy",
             authority: "State commercial leases legislation",
+            websiteUrl: "https://www.business.gov.au/planning/new-businesses/choose-a-business-location/commercial-leases",
+            websiteLabel: "business.gov.au — commercial leases",
             summary:
               "Reviews tenant leases for income stability — when leases expire, how rent is reviewed, and what make-good costs tenants owe at exit.",
             whyItMatters:

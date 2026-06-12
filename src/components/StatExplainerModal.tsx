@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
-import { X, ChevronRight } from "lucide-react";
+import { X, ChevronRight, ExternalLink } from "lucide-react";
 import { copy } from "@/lib/copy";
 import type { RegulationCategory } from "@/types";
 
@@ -159,6 +159,18 @@ export function StatExplainerModal({
                       <span className="font-medium text-slate-800">Why it matters: </span>
                       {content.whyItMatters}
                     </p>
+                    {"websiteUrl" in content && content.websiteUrl && (
+                      <a
+                        href={content.websiteUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-3 inline-flex min-h-[44px] items-center gap-1.5 rounded-xl border border-slate-200 bg-white/80 px-3 py-2 text-xs font-semibold text-brand-700 transition-colors hover:border-brand-200 hover:bg-white hover:text-brand-800"
+                        aria-label={`${edu.frameworks.visitWebsite}: ${content.websiteLabel}`}
+                      >
+                        {edu.frameworks.visitWebsite}
+                        <ExternalLink className="h-3.5 w-3.5 shrink-0" aria-hidden />
+                      </a>
+                    )}
                   </li>
                 );
               })}
