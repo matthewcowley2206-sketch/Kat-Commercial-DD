@@ -574,9 +574,9 @@ export const copy = {
     },
     disclaimer: {
       short:
-        "Kat Commercial DD provides indicative due diligence guidance only. It is not legal, financial, tax, or investment advice. Always verify findings with qualified professionals before making decisions.",
+        "Kat Commercial DD is delivered by qualified commercial mortgage brokers and provides indicative due diligence guidance only. It is not legal, financial, tax, or investment advice. Where your transaction requires it, obtain advice from other appropriately qualified professionals before making decisions.",
       banner:
-        "Indicative guidance only — not legal, financial, or lending advice. Scores and checklists require professional verification.",
+        "Indicative guidance from qualified commercial mortgage brokers — not legal, financial, tax, or investment advice.",
     },
     privacy: {
       title: "Privacy policy",
